@@ -1,0 +1,2610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi tool website</title>
+    <style>
+        /* CSS variables and global styles */
+        :root {
+            --bg-color: #1E1E2F;
+            --text-color: #EAEAEA;
+            --header-bg: #2B2D42;
+            --accent-color: #FFD700;
+            --card-bg: #3A3D5B;
+            --button-hover-color: #E6C200;
+            --shadow-color: rgba(255, 215, 0, 0.2);
+        }
+
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--header-bg);
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            color: var(--accent-color);
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        /* Tool Grid */
+        .tool-grid {
+            display: grid;
+            gap: 25px;
+            grid-template-columns: repeat(3, 1fr); /* Desktop */
+        }
+
+        /* Tool Card */
+        .tool-card {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            background-color: var(--accent-color);
+            color: var(--bg-color); /* Text turns dark on hover */
+            box-shadow: 0 8px 25px var(--shadow-color);
+        }
+
+        .tool-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--accent-color); /* Initial title color */
+            transition: color 0.3s ease;
+        }
+        .tool-card:hover h2 {
+             color: var(--bg-color); /* Title color on hover */
+        }
+
+
+        .tool-card p {
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            flex-grow: 1; /* Makes description take available space */
+            opacity: 0.9;
+        }
+         .tool-card:hover p {
+            color: var(--bg-color); /* p color on hover */
+             opacity: 1;
+        }
+
+
+        .tool-card button {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            align-self: flex-start; 
+            width: 100%; 
+            text-align: center;
+        }
+        
+        .tool-card:hover button {
+            background-color: var(--bg-color);
+            color: var(--accent-color);
+        }
+
+        /* General Button Style (for within modals etc) */
+        .btn {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            background-color: var(--button-hover-color);
+        }
+        
+        .btn-secondary {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+        .btn-secondary:hover {
+            background-color: #4a4d6b; 
+        }
+
+
+        /* Modal */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background-color: var(--header-bg); 
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 700px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .modal-content h3 {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .close-button {
+            color: var(--text-color);
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--accent-color);
+        }
+
+        /* Form Elements in Modal */
+        .tool-input-group {
+            margin-bottom: 20px;
+        }
+        .tool-input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+        .tool-input-group input[type="text"],
+        .tool-input-group input[type="number"],
+        .tool-input-group input[type="date"],
+        .tool-input-group input[type="file"],
+        .tool-input-group input[type="color"],
+        .tool-input-group input[type="range"],
+        .tool-input-group select,
+        .tool-input-group textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--card-bg);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+        .tool-input-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .tool-input-group input[type="file"] {
+            padding: 3px; 
+        }
+        .tool-input-group input[type="color"] {
+            padding: 2px;
+            height: 40px;
+        }
+        .tool-input-group input::placeholder,
+        .tool-input-group textarea::placeholder {
+            color: #888;
+        }
+
+
+        .tool-output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--bg-color);
+            border-radius: 5px;
+            border: 1px solid var(--card-bg);
+            min-height: 50px;
+            word-wrap: break-word;
+        }
+        .tool-output img, .tool-output canvas, .tool-output video, .tool-output audio {
+            max-width: 100%;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .tool-output pre {
+            white-space: pre-wrap;
+            word-break: break-all;
+            background-color: var(--bg-color); 
+            color: var(--text-color);
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Fade-in for tool cards (optional, via JS) */
+        .tool-card.fade-in-element {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .tool-card.fade-in-element.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+        /* Responsive Design */
+        @media (max-width: 992px) { /* Tablet */
+            .tool-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            header h1 {
+                font-size: 2rem;
+            }
+            .modal-content {
+                width: 90%;
+                margin: 10% auto;
+            }
+        }
+
+        @media (max-width: 600px) { /* Mobile */
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+            header h1 {
+                font-size: 1.8rem;
+            }
+             .modal-content {
+                margin: 15% auto; 
+                padding: 20px;
+            }
+            .modal-content h3 {
+                font-size: 1.5rem;
+            }
+            .tool-card button {
+                padding: 10px 15px; 
+            }
+            /* Timer/Stopwatch input fields stacked on mobile */
+            #timerTab .tool-input-group input[type="number"] {
+                width: calc(33% - 10px);
+                margin-bottom: 5px;
+            }
+            #timerTab .tool-input-group label {
+                width: auto;
+                margin-right: 5px;
+            }
+        }
+
+        /* Utility for messages/status */
+        .status-message {
+            padding: 10px;
+            margin-top: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .status-success {
+            background-color: #28a745; 
+            color: white;
+        }
+        .status-error {
+            background-color: #dc3545; 
+            color: white;
+        }
+        .status-processing {
+            background-color: #007bff; 
+            color: white;
+        }
+        
+        /* Specific tool styling */
+        #qrCodeContainer img, #qrCodeContainer canvas { 
+            display: block;
+            margin: 10px auto;
+            border: 5px solid white; /* Make QR visible if light bg */
+        }
+
+        #cropperContainer { 
+            position: relative;
+            max-width: 100%;
+            margin-bottom: 10px;
+            user-select: none; /* Prevent text selection during drag */
+        }
+        #cropperImage {
+            max-width: 100%;
+            display: block;
+        }
+        #cropBox {
+            position: absolute;
+            border: 2px dashed var(--accent-color);
+            cursor: move;
+            box-sizing: border-box;
+        }
+        .crop-handle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent-color);
+            border: 1px solid var(--bg-color);
+            box-sizing: border-box;
+        }
+        .crop-handle.nw { top: -5px; left: -5px; cursor: nwse-resize; }
+        .crop-handle.ne { top: -5px; right: -5px; cursor: nesw-resize; }
+        .crop-handle.sw { bottom: -5px; left: -5px; cursor: nesw-resize; }
+        .crop-handle.se { bottom: -5px; right: -5px; cursor: nwse-resize; }
+
+        /* Timer/Stopwatch Tabs */
+        .tabs .tab-btn {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            margin-right: 5px;
+        }
+        .tabs .tab-btn.active {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+        }
+        .tab-content { display: none; }
+        .tab-content.active-content { display: block; }
+
+    </style>
+</head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JLQQN757M3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-JLQQN757M3');
+</script>
+<body>
+    <header>
+        <h1>Multi Tool Hub</h1>
+    </header>
+  	<script type="text/javascript">
+	atOptions = {
+		'key' : 'df78a466df510d2707615e4f3af28f2a',
+		'format' : 'iframe',
+		'height' : 90,
+		'width' : 728,
+		'params' : {}
+	};
+	</script>
+	<script type="text/javascript" src="//www.highperformanceformat.com/df78a466df510d2707615e4f3af28f2a/invoke.js"></script>
+  	<script type="text/javascript">
+	atOptions = {
+		'key' : 'df78a466df510d2707615e4f3af28f2a',
+		'format' : 'iframe',
+		'height' : 90,
+		'width' : 728,
+		'params' : {}
+	};
+	</script>
+	<script type="text/javascript" src="//www.highperformanceformat.com/df78a466df510d2707615e4f3af28f2a/invoke.js"></script>
+
+    <div class="container">
+        <!-- START: 300x250 High Performance Format Ad Slot -->
+        <div style="text-align: center; margin-top: 10px; margin-bottom: 25px;">
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : 'ce8cf30056322e5edb81a32287a5ef84',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/ce8cf30056322e5edb81a32287a5ef84/invoke.js"></script>
+        </div>
+        <!-- END: 300x250 High Performance Format Ad Slot -->
+
+        <div class="tool-grid" id="toolGrid">
+            <!-- Tool cards will be injected here by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="toolModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeModalButton">×</span>
+            <div id="modalBody">
+                <!-- Tool-specific UI will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ... rest of your HTML and script tags ... -->
+
+    <script>
+        /*
+         QRCode.js
+         Copyright (c) 2012 davidshimjs
+         Licensed under the MIT license.
+         https://github.com/davidshimjs/qrcodejs
+        */
+        var QRCode; (function() { function t(t) { this.mode = r.MODE_8BIT_BYTE, this.data = t, this.parsedData = []; for (var e = 0, n = this.data.length; e < n; e++) { var i = [], o = this.data.charCodeAt(e); o > 65536 ? (i[0] = 240 | (1835008 & o) >>> 18, i[1] = 128 | (258048 & o) >>> 12, i[2] = 128 | (4032 & o) >>> 6, i[3] = 128 | 63 & o) : o > 2048 ? (i[0] = 224 | (61440 & o) >>> 12, i[1] = 128 | (4032 & o) >>> 6, i[2] = 128 | 63 & o) : o > 128 ? (i[0] = 192 | (1984 & o) >>> 6, i[1] = 128 | 63 & o) : i[0] = o, this.parsedData = this.parsedData.concat(i) } this.parsedData.length != this.data.length && (this.parsedData.unshift(191), this.parsedData.unshift(187), this.parsedData.unshift(239)) } function e(t, e) { this.typeNumber = t, this.errorCorrectLevel = e, this.modules = null, this.moduleCount = 0, this.dataCache = null, this.dataList = [] } function n(t, e) { if (void 0 == t.length) throw new Error(t.length + "/" + e); for (var n = 0; n < t.length && 0 == t[n];)n++; this.num = new Array(t.length - n + e); for (var i = 0; i < t.length - n; i++)this.num[i] = t[i + n] } function i(t, e) { this.totalCount = t, this.dataCount = e } function o() { this.buffer = [], this.length = 0 } function r() { } function a(t, e) { this.x = t, this.y = e } function s() { this.QRCODE_PAD0 = 236, this.QRCODE_PAD1 = 17 } QRCode = function(t, e) { if (this._htOption = { width: 256, height: 256, typeNumber: 4, colorDark: "#000000", colorLight: "#ffffff", correctLevel: u.L }, "string" == typeof e && (e = { text: e }), e) for (var n in e) this._htOption[n] = e[n]; "string" == typeof t && (t = document.getElementById(t)), this._htOption.text && (this._el = t, this._oQRCode = null, this._oDrawing = null, "IMG" == this._el.tagName.toUpperCase() ? this._oDrawing = new l(this._el, this._htOption.width, this._htOption.height) : this._oDrawing = new h(this._el, this._htOption.width, this._htOption.height), this.makeCode(this._htOption.text)) }, QRCode.prototype.makeCode = function(n) { this._oQRCode = new e(this._htOption.typeNumber, this._htOption.correctLevel), this._oQRCode.addData(new t(n)), this._oQRCode.make(), this._el.title = n, this._oDrawing.draw(this._oQRCode), this.makeImage() }, QRCode.prototype.makeImage = function() { "function" == typeof this._htOption.onRenderingStart && this._htOption.onRenderingStart(); var t = this._oDrawing.makeImage(); "function" == typeof this._htOption.onRenderingEnd && this._htOption.onRenderingEnd(t) }, QRCode.prototype.clear = function() { this._oDrawing.clear() }, t.prototype = { getLength: function() { return this.parsedData.length }, write: function(t) { for (var e = 0, n = this.parsedData.length; e < n; e++)t.put(this.parsedData[e], 8) } }, e.prototype = { addData: function(t) { var e = new o; e.put(t.mode, 4), e.put(t.getLength(), r.getLengthInBits(t.mode, this.typeNumber)), t.write(e), this.dataList.push(e) }, isDark: function(t, e) { return t < 0 || this.moduleCount <= t || e < 0 || this.moduleCount <= e ? !1 : this.modules[t][e] }, getModuleCount: function() { return this.moduleCount }, make: function() { this.makeImpl(!1, this.getBestMaskPattern()) }, makeImpl: function(t, e) { this.moduleCount = 4 * this.typeNumber + 17, this.modules = new Array(this.moduleCount); for (var n = 0; n < this.moduleCount; n++) { this.modules[n] = new Array(this.moduleCount); for (var i = 0; i < this.moduleCount; i++)this.modules[n][i] = null } this.setupPositionProbePattern(0, 0), this.setupPositionProbePattern(this.moduleCount - 7, 0), this.setupPositionProbePattern(0, this.moduleCount - 7), this.setupPositionAdjustPattern(), this.setupTimingPattern(), this.setupTypeInfo(t, e), this.typeNumber >= 7 && this.setupTypeNumber(t), null == this.dataCache && (this.dataCache = e.createData(this.typeNumber, this.errorCorrectLevel, this.dataList)), this.mapData(this.dataCache, e) }, setupPositionProbePattern: function(t, e) { for (var n = -1; n <= 7; n++)if (!(t + n <= -1 || this.moduleCount <= t + n)) for (var i = -1; i <= 7; i++)e + i <= -1 || this.moduleCount <= e + i || (n >= 0 && n <= 6 && (0 == i || 6 == i) || i >= 0 && i <= 6 && (0 == n || 6 == n) || n >= 2 && n <= 4 && i >= 2 && i <= 4 ? this.modules[t + n][e + i] = !0 : this.modules[t + n][e + i] = !1) }, getBestMaskPattern: function() { for (var t = 0, e = 0, n = 0; n < 8; n++) { this.makeImpl(!0, n); var i = r.getLostPoint(this); (0 == n || t > i) && (t = i, e = n) } return e }, createMovieClip: function(t, e, n) { var i = t.createEmptyMovieClip(e, n), o = this; i.onRollOver = function() { o._el.title = o._oQRCode._htOption.text }, i.onRollOut = function() { o._el.title = "" }; var r = 1; this.isDark(0, 0) && (r = 0); for (var a = 0; a < this.moduleCount; a++)for (var s = 0; s < this.moduleCount; s++) { var l = this.modules[a][s]; (l != r || 0 == a && 0 == s) && i.beginFill(l ? this._oQRCode._htOption.colorDark : this._oQRCode._htOption.colorLight); var u = 1; i.moveTo(s * u, a * u), i.lineTo((s + 1) * u, a * u), i.lineTo((s + 1) * u, (a + 1) * u), i.lineTo(s * u, (a + 1) * u), i.endFill() } return i }, setupTimingPattern: function() { for (var t = 8; t < this.moduleCount - 8; t++)null == this.modules[t][6] && (this.modules[t][6] = t % 2 == 0); for (var e = 8; e < this.moduleCount - 8; e++)null == this.modules[6][e] && (this.modules[6][e] = e % 2 == 0) }, setupPositionAdjustPattern: function() { for (var t = r.getPatternPosition(this.typeNumber), e = 0; e < t.length; e++)for (var n = 0; n < t.length; n++) { var i = t[e], o = t[n]; if (null == this.modules[i][o]) for (var a = -2; a <= 2; a++)for (var s = -2; s <= 2; s++)a == -2 || 2 == a || s == -2 || 2 == s || 0 == a && 0 == s ? this.modules[i + a][o + s] = !0 : this.modules[i + a][o + s] = !1 } }, setupTypeNumber: function(t) { for (var e = r.getBCHTypeNumber(this.typeNumber), n = 0; n < 18; n++) { var i = !t && 1 == (e >> n & 1); this.modules[Math.floor(n / 3)][n % 3 + this.moduleCount - 8 - 3] = i } for (var n = 0; n < 18; n++) { var i = !t && 1 == (e >> n & 1); this.modules[n % 3 + this.moduleCount - 8 - 3][Math.floor(n / 3)] = i } }, setupTypeInfo: function(t, e) { for (var n = r.getBCHTypeInfo(this.errorCorrectLevel << 3 | e), i = 0; i < 15; i++) { var o = !t && 1 == (n >> i & 1); i < 6 ? this.modules[i][8] = o : i < 8 ? this.modules[i + 1][8] = o : this.modules[this.moduleCount - 15 + i][8] = o } for (var i = 0; i < 15; i++) { var o = !t && 1 == (n >> i & 1); i < 8 ? this.modules[8][this.moduleCount - i - 1] = o : i < 9 ? this.modules[8][15 - i - 1 + 1] = o : this.modules[8][15 - i - 1] = o } this.modules[this.moduleCount - 8][8] = !t }, mapData: function(t, e) { for (var n = -1, i = this.moduleCount - 1, o = 7, a = 0, s = this.moduleCount - 1; s > 0; s -= 2) { 6 == s && s--; for (; ;) { for (var l = 0; l < 2; l++)if (null == this.modules[i][s - l]) { var u = !1; a < t.length && (u = 1 == (t[a] >>> o & 1)); r.getMask(e, i, s - l) && (u = !u), this.modules[i][s - l] = u, o--, -1 == o && (a++, o = 7) } if (i += n, i < 0 || this.moduleCount <= i) { i -= n, n = -n; break } } } } }, r.MODE_NUMBER = 1, r.MODE_ALPHA_NUM = 2, r.MODE_8BIT_BYTE = 4, r.MODE_KANJI = 8, r.PATTERN_POSITION_TABLE = [[], [6, 18], [6, 22], [6, 26], [6, 30], [6, 34], [6, 22, 38], [6, 24, 42], [6, 26, 46], [6, 28, 50], [6, 30, 54], [6, 32, 58], [6, 34, 62], [6, 26, 46, 66], [6, 26, 48, 70], [6, 26, 50, 74], [6, 30, 54, 78], [6, 30, 56, 82], [6, 30, 58, 86], [6, 34, 62, 90], [6, 28, 50, 72, 94], [6, 26, 50, 74, 98], [6, 30, 54, 78, 102], [6, 28, 54, 80, 106], [6, 32, 58, 84, 110], [6, 30, 58, 86, 114], [6, 34, 62, 90, 118], [6, 26, 50, 74, 98, 122], [6, 30, 54, 78, 102, 126], [6, 26, 52, 78, 104, 130], [6, 30, 56, 82, 108, 134], [6, 34, 60, 86, 112, 138], [6, 30, 58, 86, 114, 142], [6, 34, 62, 90, 118, 146], [6, 30, 54, 78, 102, 126, 150], [6, 24, 50, 76, 102, 128, 154], [6, 28, 54, 80, 106, 132, 158], [6, 32, 58, 84, 110, 136, 162], [6, 26, 54, 82, 110, 138, 166], [6, 30, 58, 86, 114, 142, 170]], r.G15 = 1335, r.G18 = 7973, r.G15_MASK = 21522, r.getBCHTypeInfo = function(t) { for (var e = t << 10; r.getBCHDigit(e) - r.getBCHDigit(r.G15) >= 0;)e ^= r.G15 << r.getBCHDigit(e) - r.getBCHDigit(r.G15); return (t << 10 | e) ^ r.G15_MASK }, r.getBCHTypeNumber = function(t) { for (var e = t << 12; r.getBCHDigit(e) - r.getBCHDigit(r.G18) >= 0;)e ^= r.G18 << r.getBCHDigit(e) - r.getBCHDigit(r.G18); return t << 12 | e }, r.getBCHDigit = function(t) { for (var e = 0; 0 != t;)e++, t >>>= 1; return e }, r.getPatternPosition = function(t) { return r.PATTERN_POSITION_TABLE[t - 1] }, r.getMask = function(t, e, n) { switch (t) { case 0: return (e + n) % 2 == 0; case 1: return e % 2 == 0; case 2: return n % 3 == 0; case 3: return (e + n) % 3 == 0; case 4: return (Math.floor(e / 2) + Math.floor(n / 3)) % 2 == 0; case 5: return e * n % 2 + e * n % 3 == 0; case 6: return (e * n % 2 + e * n % 3) % 2 == 0; case 7: return (e * n % 3 + (e + n) % 2) % 2 == 0; default: throw new Error("bad maskPattern:" + t) } }, r.getErrorCorrectPolynomial = function(t) { for (var e = new n([1], 0), i = 0; i < t; i++)e = e.multiply(new n([1, c.gexp(i)], 0)); return e }, r.getLengthInBits = function(t, e) { if (e >= 1 && e < 10) switch (t) { case r.MODE_NUMBER: return 10; case r.MODE_ALPHA_NUM: return 9; case r.MODE_8BIT_BYTE: return 8; case r.MODE_KANJI: return 8; default: throw new Error("mode:" + t) } else if (e < 27) switch (t) { case r.MODE_NUMBER: return 12; case r.MODE_ALPHA_NUM: return 11; case r.MODE_8BIT_BYTE: return 16; case r.MODE_KANJI: return 10; default: throw new Error("mode:" + t) } else { if (!(e < 41)) throw new Error("type:" + e); switch (t) { case r.MODE_NUMBER: return 14; case r.MODE_ALPHA_NUM: return 13; case r.MODE_8BIT_BYTE: return 16; case r.MODE_KANJI: return 12; default: throw new Error("mode:" + t) } } }, r.getLostPoint = function(t) { for (var e = t.getModuleCount(), n = 0, i = 0; i < e; i++)for (var o = 0; o < e; o++) { for (var r = 0, a = t.isDark(i, o), s = -1; s <= 1; s++)if (i + s >= 0 && e > i + s) for (var l = -1; l <= 1; l++)o + l >= 0 && e > o + l && (0 != s || 0 != l) && a == t.isDark(i + s, o + l) && r++; r > 5 && (n += 3 + r - 5) } for (var i = 0; i < e - 1; i++)for (var o = 0; o < e - 1; o++) { var u = 0; t.isDark(i, o) && u++, t.isDark(i + 1, o) && u++, t.isDark(i, o + 1) && u++, t.isDark(i + 1, o + 1) && u++, (0 == u || 4 == u) && (n += 3) } for (var i = 0; i < e; i++)for (var o = 0; o < e - 6; o++)t.isDark(i, o) && !t.isDark(i, o + 1) && t.isDark(i, o + 2) && t.isDark(i, o + 3) && t.isDark(i, o + 4) && !t.isDark(i, o + 5) && t.isDark(i, o + 6) && (n += 40); for (var o = 0; o < e; o++)for (var i = 0; i < e - 6; i++)t.isDark(i, o) && !t.isDark(i + 1, o) && t.isDark(i + 2, o) && t.isDark(i + 3, o) && t.isDark(i + 4, o) && !t.isDark(i + 5, o) && t.isDark(i + 6, o) && (n += 40); for (var c = 0, o = 0; o < e; o++)for (var i = 0; i < e; i++)t.isDark(i, o) && c++; var f = Math.abs(100 * c / e / e - 50) / 5; return n += 10 * f }, e.createData = function(t, e, n) { for (var a = i.getRSBlocks(t, e), l = new o, u = 0; u < n.length; u++) { var c = n[u]; l.put(c.mode, 4), l.put(c.getLength(), r.getLengthInBits(c.mode, t)), c.write(l) } for (var f = 0, u = 0; u < a.length; u++)f += a[u].dataCount; if (l.getLengthInBits() > 8 * f) throw new Error("code length overflow. (" + l.getLengthInBits() + ">" + 8 * f + ")"); for (l.getLengthInBits() + 4 <= 8 * f && l.put(0, 4) ; l.getLengthInBits() % 8 != 0;)l.putBit(!1); for (; !(l.getLengthInBits() >= 8 * f) ;) { if (l.put(s.QRCODE_PAD0, 8), l.getLengthInBits() >= 8 * f) break; l.put(s.QRCODE_PAD1, 8) } return e.createBytes(l, a) }, e.createBytes = function(t, e) { for (var i = 0, o = 0, a = 0, s = new Array(e.length), l = new Array(e.length), u = 0; u < e.length; u++) { var c = e[u].dataCount, f = e[u].totalCount - c; o = Math.max(o, c), a = Math.max(a, f), s[u] = new Array(c); for (var g = 0; g < s[u].length; g++)s[u][g] = 255 & t.buffer[g + i]; i += c; var h = r.getErrorCorrectPolynomial(f), p = new n(s[u], h.getLength() - 1), d = p.mod(h); l[u] = new Array(h.getLength() - 1); for (var g = 0; g < l[u].length; g++) { var m = g + d.getLength() - l[u].length; l[u][g] = m >= 0 ? d.num[m] : 0 } } for (var v = new Array(e[0].totalCount), _ = 0, g = 0; g < o; g++)for (var u = 0; u < e.length; u++)g < s[u].length && (v[_++] = s[u][g]); for (var g = 0; g < a; g++)for (var u = 0; u < e.length; u++)g < l[u].length && (v[_++] = l[u][g]); return v }; var l = function(t, e, n) { this._elImage = t, this._nWidth = e, this._nHeight = n, this._sImage = "", this._bIsPainted = !1 }, c = { glog: function(t) { if (t < 1) throw new Error("glog(" + t + ")"); return c.LOG_TABLE[t] }, gexp: function(t) { for (; t < 0;)t += 255; for (; t >= 256;)t -= 255; return c.EXP_TABLE[t] }, EXP_TABLE: new Array(256), LOG_TABLE: new Array(256) }; for (var f = 0; f < 8; f++)c.EXP_TABLE[f] = 1 << f; for (var f = 8; f < 256; f++)c.EXP_TABLE[f] = c.EXP_TABLE[f - 4] ^ c.EXP_TABLE[f - 5] ^ c.EXP_TABLE[f - 6] ^ c.EXP_TABLE[f - 8]; for (var f = 0; f < 255; f++)c.LOG_TABLE[c.EXP_TABLE[f]] = f; n.prototype = { get: function(t) { return this.num[t] }, getLength: function() { return this.num.length }, multiply: function(t) { for (var e = new Array(this.getLength() + t.getLength() - 1), i = 0; i < this.getLength(); i++)for (var o = 0; o < t.getLength(); o++)e[i + o] ^= c.gexp(c.glog(this.get(i)) + c.glog(t.get(o))); return new n(e, 0) }, mod: function(t) { if (this.getLength() - t.getLength() < 0) return this; for (var e = c.glog(this.get(0)) - c.glog(t.get(0)), i = new Array(this.getLength()), o = 0; o < this.getLength(); o++)i[o] = this.get(o); for (var o = 0; o < t.getLength(); o++)i[o] ^= c.gexp(c.glog(t.get(o)) + e); return new n(i, 0).mod(t) } }, i.RS_BLOCK_TABLE = [[1, 26, 19], [1, 26, 16], [1, 26, 13], [1, 26, 9], [1, 44, 34], [1, 44, 28], [1, 44, 22], [1, 44, 16], [1, 70, 55], [1, 70, 44], [2, 35, 17], [2, 35, 13], [1, 100, 80], [2, 50, 32], [2, 50, 24], [4, 25, 9], [1, 134, 108], [2, 67, 43], [2, 33, 15, 2, 34, 16], [2, 33, 11, 2, 34, 12], [2, 86, 68], [4, 43, 27], [4, 43, 19], [4, 43, 15], [2, 98, 78], [4, 49, 31], [2, 32, 14, 4, 33, 15], [4, 39, 13, 1, 40, 14], [2, 121, 97], [2, 60, 38, 2, 61, 39], [4, 60, 22, 2, 61, 23], [4, 60, 16, 2, 61, 17], [2, 146, 116], [3, 58, 36, 2, 59, 37], [4, 36, 16, 4, 37, 17], [4, 36, 12, 4, 37, 13], [2, 86, 68, 2, 87, 69], [4, 69, 43, 1, 70, 44], [6, 43, 19, 2, 44, 20], [6, 43, 15, 2, 44, 16], [4, 101, 81], [1, 80, 50, 4, 81, 51], [4, 50, 22, 4, 51, 23], [3, 36, 12, 8, 37, 13], [2, 116, 92, 2, 117, 93], [6, 58, 36, 2, 59, 37], [4, 46, 20, 6, 47, 21], [7, 42, 14, 4, 43, 15], [4, 133, 107], [8, 59, 37, 1, 60, 38], [8, 44, 20, 4, 45, 21], [12, 33, 11, 4, 34, 12], [3, 145, 115, 1, 146, 116], [4, 64, 40, 5, 65, 41], [11, 36, 16, 5, 37, 17], [11, 36, 12, 5, 37, 13], [5, 109, 87, 1, 110, 88], [5, 65, 41, 5, 66, 42], [5, 54, 24, 7, 55, 25], [11, 36, 12], [5, 122, 98, 1, 123, 99], [7, 73, 45, 3, 74, 46], [15, 43, 19, 2, 44, 20], [3, 45, 15, 13, 46, 16], [1, 135, 107, 5, 136, 108], [10, 74, 46, 1, 75, 47], [1, 50, 22, 15, 51, 23], [2, 42, 14, 17, 43, 15], [5, 150, 120, 1, 151, 121], [9, 69, 43, 4, 70, 44], [17, 50, 22, 1, 51, 23], [2, 42, 14, 19, 43, 15], [3, 141, 113, 4, 142, 114], [3, 70, 44, 11, 71, 45], [17, 47, 21, 4, 48, 22], [9, 39, 13, 16, 40, 14], [3, 135, 107, 5, 136, 108], [3, 67, 41, 13, 68, 42], [15, 54, 24, 5, 55, 25], [15, 43, 15, 10, 44, 16], [4, 144, 116, 4, 145, 117], [17, 68, 42], [17, 50, 22, 6, 51, 23], [19, 46, 16, 6, 47, 17], [2, 139, 111, 7, 140, 112], [17, 74, 46], [7, 54, 24, 16, 55, 25], [34, 37, 13], [4, 151, 121, 5, 152, 122], [4, 75, 47, 14, 76, 48], [11, 54, 24, 14, 55, 25], [16, 45, 15, 14, 46, 16], [6, 147, 117, 4, 148, 118], [6, 73, 45, 14, 74, 46], [11, 54, 24, 16, 55, 25], [30, 46, 16, 2, 47, 17], [8, 132, 106, 4, 133, 107], [8, 75, 47, 13, 76, 48], [7, 54, 24, 22, 55, 25], [22, 45, 15, 13, 46, 16], [10, 142, 114, 2, 143, 115], [19, 74, 46, 4, 75, 47], [28, 50, 22, 6, 51, 23], [33, 46, 16, 4, 47, 17], [8, 152, 122, 4, 153, 123], [22, 73, 45, 3, 74, 46], [8, 53, 23, 26, 54, 24], [12, 45, 15, 28, 46, 16], [3, 147, 117, 10, 148, 118], [3, 73, 45, 23, 74, 46], [4, 54, 24, 31, 55, 25], [11, 45, 15, 31, 46, 16], [7, 146, 116, 7, 147, 117], [21, 73, 45, 7, 74, 46], [1, 53, 23, 37, 54, 24], [19, 45, 15, 26, 46, 16], [5, 145, 115, 10, 146, 116], [19, 75, 47, 10, 76, 48], [15, 54, 24, 25, 55, 25], [23, 45, 15, 25, 46, 16], [13, 145, 115, 3, 146, 116], [2, 74, 46, 29, 75, 47], [42, 54, 24, 1, 55, 25], [23, 45, 15, 28, 46, 16], [17, 145, 115], [10, 74, 46, 23, 75, 47], [10, 54, 24, 35, 55, 25], [19, 45, 15, 35, 46, 16], [17, 145, 115, 3, 146, 116], [14, 74, 46, 21, 75, 47], [29, 54, 24, 19, 55, 25], [11, 45, 15, 46, 46, 16], [13, 145, 115, 6, 146, 116], [14, 74, 46, 23, 75, 47], [44, 54, 24, 7, 55, 25], [59, 46, 16, 1, 47, 17], [12, 151, 121, 7, 152, 122], [12, 75, 47, 26, 76, 48], [39, 54, 24, 14, 55, 25], [22, 45, 15, 41, 46, 16], [6, 151, 121, 14, 152, 122], [6, 75, 47, 34, 76, 48], [46, 54, 24, 10, 55, 25], [2, 45, 15, 64, 46, 16], [17, 152, 122, 4, 153, 123], [29, 74, 46, 14, 75, 47], [49, 54, 24, 10, 55, 25], [24, 45, 15, 46, 46, 16], [4, 152, 122, 18, 153, 123], [13, 74, 46, 32, 75, 47], [48, 54, 24, 14, 55, 25], [42, 45, 15, 32, 46, 16], [20, 147, 117, 4, 148, 118], [40, 75, 47, 7, 76, 48], [43, 54, 24, 22, 55, 25], [10, 45, 15, 67, 46, 16], [19, 148, 118, 6, 149, 119], [18, 75, 47, 31, 76, 48], [34, 54, 24, 34, 55, 25], [20, 45, 15, 61, 46, 16]], i.getRSBlocks = function(t, e) { var n = i.getRsBlockTable(t, e); if (void 0 == n) throw new Error("bad rs block @ typeNumber:" + t + "/errorCorrectLevel:" + e); for (var o = n.length / 3, r = [], a = 0; a < o; a++)for (var s = n[3 * a + 0], l = n[3 * a + 1], u = n[3 * a + 2], c = 0; c < s; c++)r.push(new i(l, u)); return r }, i.getRsBlockTable = function(t, e) { switch (e) { case u.L: return i.RS_BLOCK_TABLE[4 * (t - 1) + 0]; case u.M: return i.RS_BLOCK_TABLE[4 * (t - 1) + 1]; case u.Q: return i.RS_BLOCK_TABLE[4 * (t - 1) + 2]; case u.H: return i.RS_BLOCK_TABLE[4 * (t - 1) + 3]; default: return } }, o.prototype = { get: function(t) { var e = Math.floor(t / 8); return 1 == (this.buffer[e] >>> 7 - t % 8 & 1) }, put: function(t, e) { for (var n = 0; n < e; n++)this.putBit(1 == (t >>> e - n - 1 & 1)) }, getLengthInBits: function() { return this.length }, putBit: function(t) { var e = Math.floor(this.length / 8); this.buffer.length <= e && this.buffer.push(0), t && (this.buffer[e] |= 128 >>> this.length % 8), this.length++ } }; var u = { L: 1, M: 0, Q: 3, H: 2 }; l.prototype.draw = function(t) { var e = t.getModuleCount(), n = Math.floor(this._nWidth / e), i = Math.floor(this._nHeight / e); this.clear(); for (var o = 0; o < e; o++)for (var r = 0; r < e; r++) { var a = document.createElementNS("http://www.w3.org/2000/svg", "rect"); a.setAttributeNS(null, "width", n), a.setAttributeNS(null, "height", i); var s = this._elImage.width.baseVal.value, l = this._elImage.height.baseVal.value, u = s / this._nWidth, c = l / this._nHeight; a.setAttributeNS(null, "x", Math.round(r * n * u)), a.setAttributeNS(null, "y", Math.round(o * i * c)), a.setAttributeNS(null, "fill", t.isDark(o, r) ? this._htOption.colorDark : this._htOption.colorLight), a.setAttributeNS(null, "fill-opacity", 1), this._elImage.appendChild(a) } this._bIsPainted = !0 }, l.prototype.makeImage = function() { if (!this._bIsPainted) return ""; var t = new XMLSerializer, e = t.serializeToString(this._elImage), n = "data:image/svg+xml;base64," + window.btoa(e); return this._sImage = n, this._sImage }, l.prototype.clear = function() { for (; this._elImage.hasChildNodes();)this._elImage.removeChild(this._elImage.lastChild); this._sImage = "", this._bIsPainted = !1 }; var h = function(t, e, n) { this._el = t, this._nWidth = e, this._nHeight = n, this._oContext = null, this._bIsPainted = !1, this._init() }; h.prototype._init = function() { this._el.width = this._nWidth, this._el.height = this._nHeight, this._oContext = this._el.getContext("2d") }, h.prototype.draw = function(t) { for (var e = t.getModuleCount(), n = this._nWidth / e, i = this._nHeight / e, o = Math.round(n), r = Math.round(i), a = 0; a < e; a++)for (var s = 0; s < e; s++) { this._oContext.fillStyle = t.isDark(a, s) ? this._htOption.colorDark : this._htOption.colorLight; var l = Math.round(s * n), u = Math.round(a * i); this._oContext.fillRect(l, u, o, r) } this._bIsPainted = !0 }, h.prototype.makeImage = function() { return this._bIsPainted ? this._el.toDataURL() : void 0 }, h.prototype.clear = function() { this._oContext.clearRect(0, 0, this._el.width, this._el.height), this._bIsPainted = !1 }, s.prototype = { getPosition: function(t) { return new a(this._strPosition.charCodeAt(2 * t) - 65, this._strPosition.charCodeAt(2 * t + 1) - 65) } } })();
+
+        const tools = [
+            { id: 'imageConverter', title: 'Image Converter', description: 'Convert images between JPG, PNG, and WEBP formats.' },
+            { id: 'imageCompressor', title: 'Image Compressor', description: 'Compress image file size with quality settings.' },
+            { id: 'imageCropper', title: 'Image Cropper', description: 'Upload, crop image with preview, and export.' },
+            { id: 'videoConverter', title: 'Video Converter', description: 'Convert between MP4 and WebM (browser re-encode).' },
+            { id: 'audioConverter', title: 'Audio Converter', description: 'Convert MP3/WAV/etc. to WAV format.' },
+            { id: 'audioTrimmer', title: 'Audio Trimmer', description: 'Upload, trim audio, and export trimmed WAV clip.' },
+            { id: 'ageCalculator', title: 'Age Calculator', description: 'Calculate age from date of birth.' },
+            { id: 'emiCalculator', title: 'EMI Calculator', description: 'Calculate Equated Monthly Installment for loans.' },
+            { id: 'sipCalculator', title: 'SIP Calculator', description: 'Calculate future value of monthly investments.' },
+            { id: 'qrCodeGenerator', title: 'QR Code Generator', description: 'Generate downloadable QR codes from text/URL.' },
+            { id: 'passwordGenerator', title: 'Password Generator', description: 'Create secure passwords with custom options.' },
+            { id: 'wordCounter', title: 'Word Counter', description: 'Count words, characters, spaces, and reading time.' },
+            { id: 'base64EncoderDecoder', title: 'Base64 Encoder/Decoder', description: 'Encode to Base64 or decode from Base64.' },
+            { id: 'colorPicker', title: 'Color Picker', description: 'Pick colors and get HEX, RGB, HSL values.' },
+            { id: 'textToSpeech', title: 'Text to Speech', description: 'Convert text into spoken audio.' },
+            { id: 'speechToText', title: 'Speech to Text', description: 'Convert voice from microphone into text.' },
+            { id: 'jsonFormatter', title: 'JSON Formatter', description: 'Format and validate JSON data.' },
+            { id: 'unitConverter', title: 'Unit Converter', description: 'Convert values between various units.' },
+            { id: 'bmiCalculator', title: 'BMI Calculator', description: 'Calculate Body Mass Index and category.' },
+            { id: 'timerStopwatch', title: 'Timer / Stopwatch', description: 'Simple timer and stopwatch functionality.' },
+        ];
+
+        const toolGrid = document.getElementById('toolGrid');
+        const modal = document.getElementById('toolModal');
+        const modalBody = document.getElementById('modalBody');
+        const closeModalButton = document.getElementById('closeModalButton');
+
+        // --- Helper Function to create Elements ---
+        function createElement(tag, attributes = {}, textContent = '') {
+            const element = document.createElement(tag);
+            for (const key in attributes) {
+                element.setAttribute(key, attributes[key]);
+            }
+            if (textContent) {
+                element.textContent = textContent;
+            }
+            return element;
+        }
+        
+        // --- Render Tool Cards ---
+        function renderToolCards() {
+            tools.forEach(tool => {
+                const card = createElement('div', { class: 'tool-card fade-in-element', 'data-tool-id': tool.id });
+                const title = createElement('h2', {}, tool.title);
+                const description = createElement('p', {}, tool.description);
+                const button = createElement('button', { class: 'open-tool-button' }, 'Open Tool');
+                
+                button.addEventListener('click', () => openToolModal(tool.id, tool.title));
+                
+                card.appendChild(title);
+                card.appendChild(description);
+                card.appendChild(button);
+                toolGrid.appendChild(card);
+            });
+            observeFadeInElements(); 
+        }
+
+        // --- Modal Logic ---
+        function openToolModal(toolId, toolTitle) {
+            modalBody.innerHTML = ''; 
+            
+            const titleElement = createElement('h3', {}, toolTitle);
+            modalBody.appendChild(titleElement);
+			
+            const setupFunctionName = `setup${toolId.charAt(0).toUpperCase() + toolId.slice(1)}UI`;
+            if (typeof window[setupFunctionName] === 'function') {
+                window[setupFunctionName](modalBody);
+            } else {
+                modalBody.appendChild(createElement('p', {}, 'Tool UI not implemented yet.'));
+                console.error(`Setup function ${setupFunctionName} not found.`);
+            }
+            
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto'; 
+
+            if (typeof window.currentToolCleanup === 'function') {
+                window.currentToolCleanup();
+                window.currentToolCleanup = null; 
+            }
+            if (window.speechSynthesis && speechSynthesis.speaking) {
+                speechSynthesis.cancel(); 
+            }
+            if (window.activeSpeechRecognition) {
+                try { window.activeSpeechRecognition.stop(); } catch(e) { /* ignore */ }
+                window.activeSpeechRecognition = null;
+            }
+            const mediaElements = modalBody.querySelectorAll('audio, video');
+            mediaElements.forEach(media => {
+                if (!media.paused) media.pause();
+                media.src = ''; 
+                media.load(); 
+            });
+            modalBody.innerHTML = ''; 
+        }
+
+        closeModalButton.addEventListener('click', closeModal);
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && modal.style.display === 'block') {
+                closeModal();
+            }
+        });
+
+
+        // --- Optional Fade-in Animation on Scroll ---
+        function observeFadeInElements() {
+            const elements = document.querySelectorAll('.fade-in-element');
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                elements.forEach(el => observer.observe(el));
+            } else { 
+                elements.forEach(el => el.classList.add('is-visible'));
+            }
+        }
+
+        // --- Utility for status messages ---
+        function showStatusMessage(container, message, type = 'processing') { 
+            let statusDiv = container.querySelector('.status-message');
+            if (!statusDiv) {
+                statusDiv = createElement('div', { class: 'status-message' });
+                // Insert after the h3 title if present, otherwise at the end.
+                const titleEl = container.querySelector('h3');
+                if (titleEl && titleEl.nextSibling) {
+                     container.insertBefore(statusDiv, titleEl.nextSibling);
+                } else if (titleEl) {
+                    container.appendChild(statusDiv);
+                } else {
+                    container.prepend(statusDiv); // If no h3, put at top
+                }
+            }
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message status-${type}`; 
+        }
+        function clearStatusMessage(containerOrParentOfStatus) {
+            const statusDiv = containerOrParentOfStatus.querySelector('.status-message');
+            if (statusDiv) {
+                statusDiv.remove();
+            }
+        }
+        
+        function dataURLtoBlob(dataurl) {
+            var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            while(n--){
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], {type:mime});
+        }
+
+        // --- Global WAV encoding functions ---
+        function bufferToWavGlobal(buffer) {
+            const numChannels = buffer.numberOfChannels;
+            const sampleRate = buffer.sampleRate;
+            const format = 1; // PCM
+            const bitDepth = 16;
+
+            let result;
+            if (numChannels === 2) {
+                result = interleaveGlobal(buffer.getChannelData(0), buffer.getChannelData(1));
+            } else {
+                result = buffer.getChannelData(0);
+            }
+            return encodeWAVGlobal(result, format, sampleRate, numChannels, bitDepth);
+        }
+        function encodeWAVGlobal(samples, format, sampleRate, numChannels, bitDepth) {
+            const bytesPerSample = bitDepth / 8;
+            const blockAlign = numChannels * bytesPerSample;
+            const buffer = new ArrayBuffer(44 + samples.length * bytesPerSample);
+            const view = new DataView(buffer);
+            writeStringGlobal(view, 0, 'RIFF');
+            view.setUint32(4, 36 + samples.length * bytesPerSample, true);
+            writeStringGlobal(view, 8, 'WAVE');
+            writeStringGlobal(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, format, true);
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * blockAlign, true);
+            view.setUint16(32, blockAlign, true);
+            view.setUint16(34, bitDepth, true);
+            writeStringGlobal(view, 36, 'data');
+            view.setUint32(40, samples.length * bytesPerSample, true);
+            floatTo16BitPCMGlobal(view, 44, samples);
+            return new Blob([view], { type: 'audio/wav' });
+        }
+        function floatTo16BitPCMGlobal(output, offset, input) {
+            for (let i = 0; i < input.length; i++, offset += 2) {
+                let s = Math.max(-1, Math.min(1, input[i]));
+                output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+            }
+        }
+        function interleaveGlobal(inputL, inputR) {
+            let length = inputL.length + inputR.length;
+            let result = new Float32Array(length);
+            let index = 0, inputIndex = 0;
+            while (index < length) {
+                result[index++] = inputL[inputIndex];
+                result[index++] = inputR[inputIndex];
+                inputIndex++;
+            }
+            return result;
+        }
+        function writeStringGlobal(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+        
+        // --- TOOL IMPLEMENTATIONS --- //
+
+        // --- 1. Image Converter ---
+        function setupImageConverterUI(container) {
+            container.innerHTML += `
+                <div class="tool-input-group">
+                    <label for="icFile">Upload Image (JPG, PNG, WEBP):</label>
+                    <input type="file" id="icFile" accept="image/jpeg,image/png,image/webp">
+                </div>
+                <div class="tool-input-group">
+                    <label for="icFormat">Convert to:</label>
+                    <select id="icFormat">
+                        <option value="image/jpeg">JPG</option>
+                        <option value="image/png">PNG</option>
+                        <option value="image/webp">WEBP</option>
+                    </select>
+                </div>
+                <button id="icConvertBtn" class="btn">Convert and Download</button>
+                <div class="tool-output" id="icOutput">
+                    <img id="icPreview" src="#" alt="Preview" style="display:none; max-width:100%; margin-bottom:10px;">
+                </div>
+            `;
+
+            const fileInput = container.querySelector('#icFile');
+            const formatSelect = container.querySelector('#icFormat');
+            const convertBtn = container.querySelector('#icConvertBtn');
+            const outputDiv = container.querySelector('#icOutput');
+            const previewImg = container.querySelector('#icPreview');
+            let originalFileName = 'converted_image';
+
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    originalFileName = file.name.split('.')[0];
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        previewImg.src = event.target.result;
+                        previewImg.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                    clearStatusMessage(modalBody);
+                }
+            });
+
+            convertBtn.addEventListener('click', () => {
+                if (!fileInput.files[0]) {
+                    showStatusMessage(modalBody, 'Please upload an image first.', 'error');
+                    return;
+                }
+                showStatusMessage(modalBody, 'Processing...', 'processing');
+
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
+                        
+                        const targetFormat = formatSelect.value;
+                        let quality = (targetFormat === 'image/jpeg' || targetFormat === 'image/webp') ? 0.9 : undefined;
+
+                        try {
+                            const dataUrl = canvas.toDataURL(targetFormat, quality);
+                             if (dataUrl.length < 100 && targetFormat === 'image/webp') { 
+                                throw new Error("WEBP conversion might not be supported or failed.");
+                            }
+                            const link = document.createElement('a');
+                            const extension = targetFormat.split('/')[1];
+                            link.href = dataUrl;
+                            link.download = `${originalFileName}_converted.${extension}`;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            showStatusMessage(modalBody, `Successfully converted and downloaded as ${extension.toUpperCase()}.`, 'success');
+                            previewImg.src = dataUrl; 
+                        } catch (err) {
+                            console.error("Conversion error:", err);
+                            showStatusMessage(modalBody, `Error converting to ${targetFormat.split('/')[1].toUpperCase()}. Browser might not support this format (especially WEBP encoding). Try PNG or JPG.`, 'error');
+                        }
+                    };
+                    img.onerror = () => {
+                        showStatusMessage(modalBody, 'Failed to load image. Ensure it is a valid image file.', 'error');
+                    };
+                    img.src = event.target.result;
+                };
+                reader.onerror = () => {
+                     showStatusMessage(modalBody, 'Error reading file.', 'error');
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // --- 2. Image Compressor ---
+        function setupImageCompressorUI(container) {
+            container.innerHTML += `
+                <div class="tool-input-group">
+                    <label for="imcFile">Upload Image (JPG, PNG):</label>
+                    <input type="file" id="imcFile" accept="image/jpeg,image/png">
+                </div>
+                <div class="tool-input-group">
+                    <label for="imcQuality">Quality (0.1 - 1.0 for JPG):</label>
+                    <input type="number" id="imcQuality" min="0.1" max="1.0" step="0.1" value="0.7">
+                </div>
+                <button id="imcCompressBtn" class="btn">Compress and Download</button>
+                <div class="tool-output" id="imcOutput">
+                    <p id="imcOriginalSize"></p>
+                    <p id="imcCompressedSize"></p>
+                    <img id="imcPreview" src="#" alt="Preview" style="display:none; max-width:100%; margin-bottom:10px;">
+                </div>
+            `;
+            const fileInput = container.querySelector('#imcFile');
+            const qualityInput = container.querySelector('#imcQuality');
+            const compressBtn = container.querySelector('#imcCompressBtn');
+            const outputDiv = container.querySelector('#imcOutput');
+            const previewImg = container.querySelector('#imcPreview');
+            const originalSizeP = container.querySelector('#imcOriginalSize');
+            const compressedSizeP = container.querySelector('#imcCompressedSize');
+            let originalFileName = 'compressed_image';
+
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    originalFileName = file.name.split('.')[0];
+                    originalSizeP.textContent = `Original size: ${(file.size / 1024).toFixed(2)} KB`;
+                    compressedSizeP.textContent = '';
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        previewImg.src = event.target.result;
+                        previewImg.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                    clearStatusMessage(modalBody);
+                }
+            });
+
+            compressBtn.addEventListener('click', () => {
+                if (!fileInput.files[0]) {
+                    showStatusMessage(modalBody, 'Please upload an image first.', 'error');
+                    return;
+                }
+                showStatusMessage(modalBody, 'Processing...', 'processing');
+
+                const file = fileInput.files[0];
+                const quality = parseFloat(qualityInput.value);
+                const reader = new FileReader();
+
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
+                        
+                        const outputMimeType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+                        const dataUrl = canvas.toDataURL(outputMimeType, outputMimeType === 'image/jpeg' ? quality : undefined);
+                        
+                        previewImg.src = dataUrl;
+                        previewImg.style.display = 'block';
+
+                        const blob = dataURLtoBlob(dataUrl);
+                        compressedSizeP.textContent = `Compressed size: ${(blob.size / 1024).toFixed(2)} KB`;
+
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        const extension = outputMimeType.split('/')[1];
+                        link.download = `${originalFileName}_compressed.${extension}`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(link.href);
+                        showStatusMessage(modalBody, `Successfully compressed and downloaded.`, 'success');
+                    };
+                    img.onerror = () => {
+                        showStatusMessage(modalBody, 'Failed to load image.', 'error');
+                    };
+                    img.src = event.target.result;
+                };
+                reader.onerror = () => {
+                     showStatusMessage(modalBody, 'Error reading file.', 'error');
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        // --- 3. Image Cropper ---
+        function setupImageCropperUI(container) {
+            container.innerHTML += `
+                <div class="tool-input-group">
+                    <label for="cropFile">Upload Image:</label>
+                    <input type="file" id="cropFile" accept="image/*">
+                </div>
+                <div id="cropperContainerWrapper" style="width:100%; max-height: 400px; overflow: auto; margin-bottom: 10px; border: 1px solid var(--card-bg); display:none;">
+                    <div id="cropperContainer">
+                        <img id="cropperImage" src="#" alt="Upload preview">
+                        <div id="cropBox">
+                            <div class="crop-handle nw"></div><div class="crop-handle ne"></div>
+                            <div class="crop-handle sw"></div><div class="crop-handle se"></div>
+                        </div>
+                    </div>
+                </div>
+                <button id="cropBtn" class="btn" style="display:none;">Crop and Download</button>
+                <div class="tool-output" id="cropOutput">
+                    <img id="croppedPreview" src="#" alt="Cropped Image" style="display:none; max-width:100%;">
+                </div>
+            `;
+
+            const fileInput = container.querySelector('#cropFile');
+            const cropperWrapper = container.querySelector('#cropperContainerWrapper');
+            const cropperContainerEl = container.querySelector('#cropperContainer'); // Renamed
+            const imageEl = container.querySelector('#cropperImage');
+            const cropBox = container.querySelector('#cropBox');
+            const cropBtn = container.querySelector('#cropBtn');
+            const outputDiv = container.querySelector('#cropOutput');
+            const croppedPreview = container.querySelector('#croppedPreview');
+
+            let originalImage = null, originalFileName = 'cropped_image';
+            let cropRect = { x: 10, y: 10, width: 150, height: 100 }; 
+            let isDragging = false, isResizing = false, resizeHandleClass = '';
+            let startX, startY, startCropX, startCropY, startCropWidth, startCropHeight;
+            let imageScale = 1; 
+
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    originalFileName = file.name.split('.')[0];
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        imageEl.src = event.target.result;
+                        originalImage = new Image();
+                        originalImage.onload = () => {
+                            cropperWrapper.style.display = 'block';
+                            requestAnimationFrame(() => { 
+                                const displayWidth = imageEl.clientWidth;
+                                const displayHeight = imageEl.clientHeight;
+                                if (displayWidth === 0 || displayHeight === 0 || originalImage.naturalWidth === 0) { 
+                                    imageScale = 1; 
+                                } else {
+                                    imageScale = originalImage.naturalWidth / displayWidth;
+                                }
+
+                                cropRect = {
+                                    x: displayWidth * 0.1,
+                                    y: displayHeight * 0.1,
+                                    width: Math.min(displayWidth * 0.5, displayWidth - (displayWidth * 0.1)),
+                                    height: Math.min(displayHeight * 0.5, displayHeight - (displayHeight * 0.1))
+                                };
+                                updateCropBoxStyle();
+                                cropBtn.style.display = 'inline-block';
+                                croppedPreview.style.display = 'none';
+                                clearStatusMessage(modalBody);
+                            });
+                        };
+                        originalImage.src = event.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            function updateCropBoxStyle() {
+                cropBox.style.left = `${cropRect.x}px`;
+                cropBox.style.top = `${cropRect.y}px`;
+                cropBox.style.width = `${cropRect.width}px`;
+                cropBox.style.height = `${cropRect.height}px`;
+            }
+            
+            function getRelativeMousePos(event, targetElement) {
+                const rect = targetElement.getBoundingClientRect();
+                return {
+                    x: event.clientX - rect.left,
+                    y: event.clientY - rect.top
+                };
+            }
+
+            cropBox.addEventListener('mousedown', (e) => {
+                e.preventDefault(); 
+                const mousePos = getRelativeMousePos(e, cropperContainerEl);
+                startX = mousePos.x;
+                startY = mousePos.y;
+
+                startCropX = cropRect.x;
+                startCropY = cropRect.y;
+                startCropWidth = cropRect.width;
+                startCropHeight = cropRect.height;
+
+                if (e.target.classList.contains('crop-handle')) {
+                    isResizing = true;
+                    resizeHandleClass = e.target.className.split(' ')[1]; 
+                } else {
+                    isDragging = true;
+                }
+                
+                document.addEventListener('mousemove', handleMouseMoveCropper);
+                document.addEventListener('mouseup', handleMouseUpCropper);
+            });
+            
+            function handleMouseMoveCropper(e) {
+                if (!isDragging && !isResizing) return;
+                e.preventDefault();
+                const mousePos = getRelativeMousePos(e, cropperContainerEl);
+
+                const dx = mousePos.x - startX;
+                const dy = mousePos.y - startY;
+                const minDim = 20; 
+
+                if (isDragging) {
+                    cropRect.x = Math.max(0, Math.min(startCropX + dx, imageEl.clientWidth - cropRect.width));
+                    cropRect.y = Math.max(0, Math.min(startCropY + dy, imageEl.clientHeight - cropRect.height));
+                } else if (isResizing) {
+                    let newX = startCropX, newY = startCropY, newWidth = startCropWidth, newHeight = startCropHeight;
+
+                    if (resizeHandleClass.includes('w')) { 
+                        newX = Math.min(startCropX + dx, startCropX + startCropWidth - minDim);
+                        newWidth = startCropWidth - (newX - startCropX);
+                    }
+                    if (resizeHandleClass.includes('n')) { 
+                        newY = Math.min(startCropY + dy, startCropY + startCropHeight - minDim);
+                        newHeight = startCropHeight - (newY - startCropY);
+                    }
+                    if (resizeHandleClass.includes('e')) { 
+                        newWidth = Math.max(minDim, startCropWidth + dx);
+                    }
+                    if (resizeHandleClass.includes('s')) { 
+                        newHeight = Math.max(minDim, startCropHeight + dy);
+                    }
+                    
+                    cropRect.x = Math.max(0, newX);
+                    cropRect.y = Math.max(0, newY);
+                    cropRect.width = Math.min(newWidth, imageEl.clientWidth - cropRect.x);
+                    cropRect.height = Math.min(newHeight, imageEl.clientHeight - cropRect.y);
+                }
+                updateCropBoxStyle();
+            }
+
+            function handleMouseUpCropper() {
+                isDragging = false;
+                isResizing = false;
+                document.removeEventListener('mousemove', handleMouseMoveCropper);
+                document.removeEventListener('mouseup', handleMouseUpCropper);
+            }
+            
+            cropBtn.addEventListener('click', () => {
+                if (!originalImage || !originalImage.complete || originalImage.naturalWidth === 0) {
+                    showStatusMessage(modalBody, 'Please upload a valid image first.', 'error');
+                    return;
+                }
+                showStatusMessage(modalBody, 'Processing...', 'processing');
+
+                const canvas = document.createElement('canvas');
+                const actualCropX = cropRect.x * imageScale;
+                const actualCropY = cropRect.y * imageScale;
+                const actualCropWidth = cropRect.width * imageScale;
+                const actualCropHeight = cropRect.height * imageScale;
+
+                canvas.width = actualCropWidth;
+                canvas.height = actualCropHeight;
+                const ctx = canvas.getContext('2d');
+
+                ctx.drawImage(
+                    originalImage,
+                    actualCropX, actualCropY, actualCropWidth, actualCropHeight, 
+                    0, 0, actualCropWidth, actualCropHeight 
+                );
+
+                const dataUrl = canvas.toDataURL(fileInput.files[0].type || 'image/png'); 
+                croppedPreview.src = dataUrl;
+                croppedPreview.style.display = 'block';
+
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                const extension = (fileInput.files[0].type || 'image/png').split('/')[1];
+                link.download = `${originalFileName}_cropped.${extension}`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showStatusMessage(modalBody, 'Image cropped and downloaded.', 'success');
+            });
+            window.currentToolCleanup = () => {
+                document.removeEventListener('mousemove', handleMouseMoveCropper);
+                document.removeEventListener('mouseup', handleMouseUpCropper);
+            };
+        }
+
+        // --- 4. Video Converter ---
+        function setupVideoConverterUI(container) {
+            container.innerHTML += `
+                <div class="tool-input-group">
+                    <label for="vcFile">Upload Video (MP4, WebM, MKV):</label>
+                    <input type="file" id="vcFile" accept="video/mp4,video/webm,.mkv">
+                </div>
+                <div class="tool-input-group">
+                    <label for="vcFormat">Convert to:</label>
+                    <select id="vcFormat">
+                        <option value="video/webm;codecs=vp8">WebM (VP8)</option>
+                        <option value="video/webm;codecs=vp9">WebM (VP9)</option>
+                        <option value="video/mp4">MP4 (Browser Default Codec)</option>
+                    </select>
+                </div>
+                <button id="vcConvertBtn" class="btn">Convert and Download</button>
+                <div class="tool-output" id="vcOutput">
+                    <video id="vcPreview" controls style="display:none; max-width:100%; margin-bottom:10px; background-color:black;"></video>
+                    <p id="vcStatus"></p>
+                </div>
+            `;
+
+            const fileInput = container.querySelector('#vcFile');
+            const formatSelect = container.querySelector('#vcFormat');
+            const convertBtn = container.querySelector('#vcConvertBtn');
+            const outputDiv = container.querySelector('#vcOutput');
+            const previewVideo = container.querySelector('#vcPreview');
+            const statusP = container.querySelector('#vcStatus');
+            let originalFileName = 'converted_video';
+            let mediaRecorder;
+            let recordedChunks = [];
+            let currentStream;
+
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    originalFileName = file.name.split('.')[0];
+                    const url = URL.createObjectURL(file);
+                    previewVideo.src = url;
+                    previewVideo.style.display = 'block';
+                    previewVideo.load();
+                    statusP.textContent = 'Video loaded. Ready to convert.';
+                    clearStatusMessage(modalBody);
+                }
+            });
+
+            convertBtn.addEventListener('click', () => {
+                if (!previewVideo.src || previewVideo.src === window.location.href + "#") { 
+                    showStatusMessage(modalBody, 'Please upload a video first.', 'error');
+                    return;
+                }
+
+                const targetMimeType = formatSelect.value;
+                if (typeof MediaRecorder === "undefined" || !MediaRecorder.isTypeSupported(targetMimeType.split(';')[0])) { // Check base MIME type
+                    showStatusMessage(modalBody, `Conversion to ${targetMimeType.split(';')[0]} is not supported by your browser or MediaRecorder is unavailable.`, 'error');
+                    return;
+                }
+                showStatusMessage(modalBody, 'Starting conversion... Video will play during conversion.', 'processing');
+                statusP.textContent = 'Conversion started. Please wait until the video finishes playing.';
+                
+                recordedChunks = [];
+
+                if (previewVideo.captureStream) {
+                    currentStream = previewVideo.captureStream();
+                } else if (previewVideo.mozCaptureStream) {
+                    currentStream = previewVideo.mozCaptureStream();
+                } else {
+                    showStatusMessage(modalBody, 'Video stream capture not supported by your browser.', 'error');
+                    return;
+                }
+                
+                if (currentStream.getTracks().length === 0) {
+                    showStatusMessage(modalBody, 'Cannot capture stream (no tracks). Try a different video or browser.', 'error');
+                    return;
+                }
+                
+                try {
+                    mediaRecorder = new MediaRecorder(currentStream, { mimeType: targetMimeType });
+                } catch (e) {
+                    showStatusMessage(modalBody, `Error initializing MediaRecorder for ${targetMimeType.split(';')[0]}: ${e.message}. Try another format or browser.`, 'error');
+                    console.error("MediaRecorder init error:", e);
+                    return;
+                }
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: targetMimeType.split(';')[0] }); 
+                    const url = URL.createObjectURL(blob);
+                    
+                    const link = document.createElement('a');
+                    link.href = url;
+                    const extension = targetMimeType.includes('mp4') ? 'mp4' : 'webm';
+                    link.download = `${originalFileName}_converted.${extension}`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                    
+                    showStatusMessage(modalBody, `Video converted and downloaded as ${extension.toUpperCase()}.`, 'success');
+                    statusP.textContent = `Conversion complete. Size: ${(blob.size / (1024*1024)).toFixed(2)} MB.`;
+                    previewVideo.onended = null; 
+                };
+                
+                mediaRecorder.onerror = (event) => {
+                    showStatusMessage(modalBody, `MediaRecorder error: ${event.error ? event.error.name : 'Unknown error'}`, 'error');
+                    console.error("MediaRecorder error:", event.error || event);
+                    if (previewVideo.onended) previewVideo.onended = null;
+                };
+                
+                previewVideo.currentTime = 0; 
+                previewVideo.muted = true; 
+                previewVideo.play().then(() => {
+                    mediaRecorder.start();
+                }).catch(err => {
+                    showStatusMessage(modalBody, `Error playing video for conversion: ${err.message}`, 'error');
+                });
+                
+                previewVideo.onended = () => {
+                    if (mediaRecorder && mediaRecorder.state === "recording") {
+                        mediaRecorder.stop();
+                    }
+                    statusP.textContent = 'Video processing finished.';
+                };
+                 
+                window.currentToolCleanup = () => {
+                    if (mediaRecorder && mediaRecorder.state === "recording") {
+                        mediaRecorder.stop();
+                    }
+                    previewVideo.pause();
+                    previewVideo.onended = null; 
+                    if (currentStream) currentStream.getTracks().forEach(track => track.stop());
+                    currentStream = null;
+                };
+            });
+        }
+
+        // --- 5. Audio Converter ---
+        function setupAudioConverterUI(container) {
+            container.innerHTML += `
+                <div class="tool-input-group">
+                    <label for="acFile">Upload Audio (MP3, WAV, OGG, etc.):</label>
+                    <input type="file" id="acFile" accept="audio/*">
+                </div>
+                <button id="acConvertBtn" class="btn">Convert to WAV and Download</button>
+                <div class="tool-output" id="acOutput">
+                    <audio id="acPreview" controls style="display:none; width:100%; margin-bottom:10px;"></audio>
+                </div>
+            `;
+
+            const fileInput = container.querySelector('#acFile');
+            const convertBtn = container.querySelector('#acConvertBtn');
+            const outputDiv = container.querySelector('#acOutput');
+            const previewAudio = container.querySelector('#acPreview');
+            let audioContext = null; 
+            let originalFileName = 'converted_audio';
+
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    originalFileName = file.name.split('.')[0];
+                    const url = URL.createObjectURL(file);
+                    previewAudio.src = url;
+                    previewAudio.style.display = 'block';
+                    clearStatusMessage(modalBody);
+                }
+            });
+
+            convertBtn.addEventListener('click', async () => {
+                if (!fileInput.files[0]) {
+                    showStatusMessage(modalBody, 'Please upload an audio file first.', 'error');
+                    return;
+                }
+                showStatusMessage(modalBody, 'Processing...', 'processing');
+
+                if (!audioContext) { // Lazy init
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } else if (audioContext.state === 'closed') { // Re-init if closed
+                     audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+
+
+                const file = fileInput.files[0];
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                    const wavBlob = bufferToWavGlobal(audioBuffer); 
+                    
+                    const url = URL.createObjectURL(wavBlob);
+                    
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `${originalFileName}_converted.wav`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                    
+                    showStatusMessage(modalBody, 'Successfully converted to WAV and downloaded.', 'success');
+                } catch (err) {
+                    console.error("Audio conversion error:", err);
+                    showStatusMessage(modalBody, `Error during audio conversion: ${err.message}. Ensure it's a valid audio file.`, 'error');
+                }
+            });
+            
+            window.currentToolCleanup = () => {
+                // Don't close audioContext here as it might be shared or needed again.
+                // Browsers usually handle context lifecycle.
+                previewAudio.pause();
+                previewAudio.src = "";
+            };
+        }
+        
+        // --- 6. Audio Trimmer ---
+        function setupAudioTrimmerUI(container) {
+            container.innerHTML += `
+                <div class="tool-input-group">
+                    <label for="atFile">Upload Audio (MP3, WAV, etc.):</label>
+                    <input type="file" id="atFile" accept="audio/*">
+                </div>
+                <div class="tool-input-group">
+                    <label for="atStartTime">Start Time (seconds):</label>
+                    <input type="number" id="atStartTime" value="0" min="0" step="0.1">
+                </div>
+                <div class="tool-input-group">
+                    <label for="atEndTime">End Time (seconds):</label>
+                    <input type="number" id="atEndTime" value="5" min="0" step="0.1">
+                </div>
+                <button id="atTrimBtn" class="btn">Trim and Download WAV</button>
+                <div class="tool-output" id="atOutput">
+                    <audio id="atPreview" controls style="display:none; width:100%; margin-bottom:10px;"></audio>
+                    <p id="atDurationInfo" style="margin-bottom:10px;"></p>
+                    <audio id="atTrimmedPreview" controls style="display:none; width:100%; margin-top:10px;"></audio>
+                </div>
+            `;
+
+            const fileInput = container.querySelector('#atFile');
+            const startTimeInput = container.querySelector('#atStartTime');
+            const endTimeInput = container.querySelector('#atEndTime');
+            const trimBtn = container.querySelector('#atTrimBtn');
+            const outputDiv = container.querySelector('#atOutput');
+            const previewAudio = container.querySelector('#atPreview');
+            const durationInfoP = container.querySelector('#atDurationInfo');
+            const trimmedPreviewAudio = container.querySelector('#atTrimmedPreview');
+            
+            let audioContextTrimmer = null; 
+            let originalAudioBuffer = null;
+            let originalFileName = 'trimmed_audio';
+
+            fileInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    if (!audioContextTrimmer) { // Lazy init
+                         audioContextTrimmer = new (window.AudioContext || window.webkitAudioContext)();
+                    } else if (audioContextTrimmer.state === 'closed') { // Re-init if closed
+                         audioContextTrimmer = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+
+                    originalFileName = file.name.split('.')[0];
+                    previewAudio.src = URL.createObjectURL(file);
+                    previewAudio.style.display = 'block';
+                    trimmedPreviewAudio.style.display = 'none'; 
+                    clearStatusMessage(modalBody);
+                    durationInfoP.textContent = 'Loading audio info...';
+
+                    try {
+                        const arrayBuffer = await file.arrayBuffer();
+                        originalAudioBuffer = await audioContextTrimmer.decodeAudioData(arrayBuffer);
+                        durationInfoP.textContent = `Audio loaded. Duration: ${originalAudioBuffer.duration.toFixed(2)}s`;
+                        endTimeInput.value = Math.min(originalAudioBuffer.duration, 5).toFixed(1); 
+                        endTimeInput.max = originalAudioBuffer.duration.toFixed(1);
+                        startTimeInput.max = (originalAudioBuffer.duration - 0.1).toFixed(1); 
+                    } catch (err) {
+                        originalAudioBuffer = null;
+                        durationInfoP.textContent = '';
+                        showStatusMessage(modalBody, `Error loading audio: ${err.message}`, 'error');
+                    }
+                }
+            });
+
+            trimBtn.addEventListener('click', () => {
+                if (!originalAudioBuffer) {
+                    showStatusMessage(modalBody, 'Please upload and process an audio file first.', 'error');
+                    return;
+                }
+
+                const startTime = parseFloat(startTimeInput.value);
+                const endTime = parseFloat(endTimeInput.value);
+
+                if (isNaN(startTime) || isNaN(endTime) || startTime < 0 || endTime <= startTime || endTime > originalAudioBuffer.duration) {
+                    showStatusMessage(modalBody, 'Invalid start or end time. Ensure Start < End and within audio duration.', 'error');
+                    return;
+                }
+                showStatusMessage(modalBody, 'Trimming audio...', 'processing');
+
+                try {
+                    const startOffset = Math.floor(startTime * originalAudioBuffer.sampleRate);
+                    const endOffset = Math.floor(endTime * originalAudioBuffer.sampleRate);
+                    const frameCount = endOffset - startOffset;
+
+                    if (frameCount <= 0) {
+                         showStatusMessage(modalBody, 'Trimmed duration is too short or invalid.', 'error');
+                         return;
+                    }
+
+                    const trimmedBuffer = audioContextTrimmer.createBuffer(
+                        originalAudioBuffer.numberOfChannels,
+                        frameCount,
+                        originalAudioBuffer.sampleRate
+                    );
+
+                    for (let i = 0; i < originalAudioBuffer.numberOfChannels; i++) {
+                        const channelData = originalAudioBuffer.getChannelData(i);
+                        const trimmedChannelData = trimmedBuffer.getChannelData(i);
+                        trimmedChannelData.set(channelData.subarray(startOffset, endOffset));
+                    }
+                    
+                    const wavBlob = bufferToWavGlobal(trimmedBuffer); 
+
+                    const url = URL.createObjectURL(wavBlob);
+                    trimmedPreviewAudio.src = url;
+                    trimmedPreviewAudio.style.display = 'block';
+
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `${originalFileName}_trimmed.wav`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    // URL.revokeObjectURL(url); // Keep for preview
+
+                    showStatusMessage(modalBody, 'Audio trimmed and downloaded as WAV.', 'success');
+                } catch (err) {
+                    console.error("Audio trimming error:", err);
+                    showStatusMessage(modalBody, `Error trimming audio: ${err.message}`, 'error');
+                }
+            });
+            window.currentToolCleanup = () => {
+                previewAudio.pause(); previewAudio.src = "";
+                trimmedPreviewAudio.pause(); trimmedPreviewAudio.src = "";
+                originalAudioBuffer = null;
+            };
+        }
+        
+        // --- 7. Age Calculator ---
+        function setupAgeCalculatorUI(container) {
+            container.innerHTML += `
+                <div class="tool-input-group">
+                    <label for="acBirthDate">Date of Birth:</label>
+                    <input type="date" id="acBirthDate">
+                </div>
+                <button id="acCalculateBtn" class="btn">Calculate Age</button>
+                <div class="tool-output" id="acResult"></div>
+            `;
+            const birthDateInput = container.querySelector('#acBirthDate');
+            const calculateBtn = container.querySelector('#acCalculateBtn');
+            const resultDiv = container.querySelector('#acResult');
+
+            birthDateInput.max = new Date().toISOString().split("T")[0];
+
+            calculateBtn.addEventListener('click', () => {
+                const birthDateStr = birthDateInput.value;
+                resultDiv.innerHTML = ''; 
+                clearStatusMessage(modalBody);
+                if (!birthDateStr) {
+                    showStatusMessage(modalBody, 'Please enter your date of birth.', 'error');
+                    return;
+                }
+                const birthDate = new Date(birthDateStr);
+                const today = new Date();
+
+                if (birthDate > today) {
+                    showStatusMessage(modalBody, 'Birth date cannot be in the future.', 'error');
+                    return;
+                }
+
+                let years = today.getFullYear() - birthDate.getFullYear();
+                let months = today.getMonth() - birthDate.getMonth();
+                let days = today.getDate() - birthDate.getDate();
+
+                if (days < 0) {
+                    months--;
+                    const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0); // Day 0 of current month is last day of prev month
+                    days += prevMonth.getDate();
+                }
+                if (months < 0) {
+                    years--;
+                    months += 12;
+                }
+                resultDiv.innerHTML = `You are: <br>
+                                      <strong>${years}</strong> years, 
+                                      <strong>${months}</strong> months, and 
+                                      <strong>${days}</strong> days old.`;
+            });
+        }
+
+        // --- 8. EMI Calculator ---
+        function setupEmiCalculatorUI(container) {
+            container.innerHTML += `
+                <div class="tool-input-group">
+                    <label for="loanAmount">Loan Amount (₹):</label>
+                    <input type="number" id="loanAmount" placeholder="e.g., 100000" min="0">
+                </div>
+                <div class="tool-input-group">
+                    <label for="interestRate">Annual Interest Rate (%):</label>
+                    <input type="number" id="interestRate" placeholder="e.g., 10.5" step="0.01" min="0">
+                </div>
+                <div class="tool-input-group">
+                    <label for="loanTenure">Loan Tenure (years):</label>
+                    <input type="number" id="loanTenure" placeholder="e.g., 5" min="0">
+                </div>
+                <button id="emiCalculateBtn" class="btn">Calculate EMI</button>
+                <div class="tool-output" id="emiResult"></div>
+            `;
+            const loanAmountInput = container.querySelector('#loanAmount');
+            const interestRateInput = container.querySelector('#interestRate');
+            const loanTenureInput = container.querySelector('#loanTenure');
+            const calculateBtn = container.querySelector('#emiCalculateBtn');
+            const resultDiv = container.querySelector('#emiResult');
+
+            calculateBtn.addEventListener('click', () => {
+                resultDiv.innerHTML = ''; 
+                clearStatusMessage(modalBody);
+                const P = parseFloat(loanAmountInput.value); 
+                const annualRate = parseFloat(interestRateInput.value); 
+                const tenureYears = parseFloat(loanTenureInput.value); 
+
+                if (isNaN(P) || isNaN(annualRate) || isNaN(tenureYears) || P <= 0 || annualRate < 0 || tenureYears <= 0) {
+                    showStatusMessage(modalBody, 'Please enter valid positive values for all fields (rate can be 0).', 'error');
+                    return;
+                }
+
+                const R = annualRate / 12 / 100; 
+                const N = tenureYears * 12; 
+
+                let EMI;
+                if (R === 0) { 
+                     EMI = P / N;
+                } else {
+                     EMI = P * R * (Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
+                }
+                
+                const totalPayment = EMI * N;
+                const totalInterest = totalPayment - P;
+
+                resultDiv.innerHTML = `Monthly EMI: <strong>₹${EMI.toFixed(2)}</strong><br>
+                                       Total Interest Payable: <strong>₹${totalInterest.toFixed(2)}</strong><br>
+                                       Total Payment (Principal + Interest): <strong>₹${totalPayment.toFixed(2)}</strong>`;
+            });
+        }
+        
+        // --- 9. SIP Calculator ---
+        function setupSipCalculatorUI(container) {
+            container.innerHTML += `
+                <div class="tool-input-group">
+                    <label for="monthlyInvestment">Monthly Investment (₹):</label>
+                    <input type="number" id="monthlyInvestment" placeholder="e.g., 5000" min="0">
+                </div>
+                <div class="tool-input-group">
+                    <label for="expectedRate">Expected Annual Return Rate (%):</label>
+                    <input type="number" id="expectedRate" placeholder="e.g., 12" step="0.01" min="0">
+                </div>
+                <div class="tool-input-group">
+                    <label for="investmentDuration">Investment Duration (years):</label>
+                    <input type="number" id="investmentDuration" placeholder="e.g., 10" min="0">
+                </div>
+                <button id="sipCalculateBtn" class="btn">Calculate Future Value</button>
+                <div class="tool-output" id="sipResult"></div>
+            `;
+            const monthlyInvestmentInput = container.querySelector('#monthlyInvestment');
+            const expectedRateInput = container.querySelector('#expectedRate');
+            const investmentDurationInput = container.querySelector('#investmentDuration');
+            const calculateBtn = container.querySelector('#sipCalculateBtn');
+            const resultDiv = container.querySelector('#sipResult');
+
+            calculateBtn.addEventListener('click', () => {
+                resultDiv.innerHTML = '';
+                clearStatusMessage(modalBody);
+                const M = parseFloat(monthlyInvestmentInput.value); 
+                const annualReturnRate = parseFloat(expectedRateInput.value); 
+                const T = parseFloat(investmentDurationInput.value); 
+
+                if (isNaN(M) || isNaN(annualReturnRate) || isNaN(T) || M <= 0 || annualReturnRate < 0 || T <= 0) {
+                    showStatusMessage(modalBody, 'Please enter valid positive values (rate can be 0).', 'error');
+                    return;
+                }
+
+                const n = T * 12; 
+                const i = annualReturnRate / 100 / 12; 
+
+                let futureValue;
+                if (i === 0) { 
+                    futureValue = M * n;
+                } else {
+                    futureValue = M * ( (Math.pow(1 + i, n) - 1) / i ) * (1 + i);
+                }
+                
+                const totalInvestment = M * n;
+                const estimatedReturns = futureValue - totalInvestment;
+
+                resultDiv.innerHTML = `Total Investment: <strong>₹${totalInvestment.toFixed(2)}</strong><br>
+                                       Estimated Returns: <strong>₹${estimatedReturns.toFixed(2)}</strong><br>
+                                       Future Value: <strong>₹${futureValue.toFixed(2)}</strong>`;
+            });
+        }
+
+        // --- 10. QR Code Generator ---
+        function setupQrCodeGeneratorUI(container) {
+            container.innerHTML += `
+                <div class="tool-input-group">
+                    <label for="qrText">Text or URL:</label>
+                    <input type="text" id="qrText" placeholder="Enter text or URL">
+                </div>
+                <button id="qrGenerateBtn" class="btn">Generate QR Code</button>
+                <div class="tool-output" id="qrOutput">
+                    <div id="qrCodeContainer" style="background-color: white; padding:10px; display:inline-block; margin: 10px auto 0;"></div>
+                    <a id="qrDownloadLink" class="btn" style="display:none; margin-top:15px;">Download QR Code</a>
+                </div>
+            `;
+            const textInput = container.querySelector('#qrText');
+            const generateBtn = container.querySelector('#qrGenerateBtn');
+            const qrCodeContainer = container.querySelector('#qrCodeContainer');
+            const downloadLink = container.querySelector('#qrDownloadLink');
+            const outputDiv = container.querySelector('#qrOutput');
+            let qrCodeInstance = null;
+
+            generateBtn.addEventListener('click', () => {
+                const text = textInput.value.trim();
+                qrCodeContainer.innerHTML = ''; 
+                downloadLink.style.display = 'none';
+                clearStatusMessage(modalBody);
+
+                if (!text) {
+                    showStatusMessage(modalBody, 'Please enter text or URL.', 'error');
+                    return;
+                }
+                
+                if (typeof QRCode !== "undefined") { 
+                    try {
+                        qrCodeInstance = new QRCode(qrCodeContainer, {
+                            text: text,
+                            width: 200,
+                            height: 200,
+                            colorDark : "#000000", 
+                            colorLight : "#ffffff", 
+                            correctLevel : QRCode.CorrectLevel.H
+                        });
+                        
+                        setTimeout(() => { // Allow QR to render
+                            const canvas = qrCodeContainer.querySelector('canvas');
+                            const img = qrCodeContainer.querySelector('img'); // qrcode.js might use img for older browsers
+
+                            if (canvas) {
+                                downloadLink.href = canvas.toDataURL('image/png');
+                            } else if (img && img.src.startsWith('data:image')) { // Check if img src is data URL
+                                downloadLink.href = img.src;
+                            } else {
+                                showStatusMessage(modalBody, 'QR code generated, but download unavailable.', 'error');
+                                return;
+                            }
+                            downloadLink.download = 'qrcode.png';
+                            downloadLink.style.display = 'inline-block';
+                            showStatusMessage(modalBody, 'QR Code generated.', 'success');
+                        }, 100); // Small delay
+                    } catch (e) {
+                         showStatusMessage(modalBody, `Error generating QR: ${e.message}`, 'error');
+                         console.error("QR generation error:", e);
+                    }
+                } else {
+                    showStatusMessage(modalBody, 'QR Code generation library not available.', 'error');
+                }
+            });
+        }
+
+        // --- 11. Password Generator ---
+        function setupPasswordGeneratorUI(container) {
+            container.innerHTML += `
+                <div class="tool-input-group">
+                    <label for="pgLength">Password Length:</label>
+                    <input type="number" id="pgLength" value="16" min="8" max="128">
+                </div>
+                <div class="tool-input-group" style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <input type="checkbox" id="pgUppercase" checked style="width:auto; margin-right:8px;"> <label for="pgUppercase" style="display:inline; margin-bottom:0;">Include Uppercase (A-Z)</label>
+                </div>
+                <div class="tool-input-group" style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <input type="checkbox" id="pgLowercase" checked style="width:auto; margin-right:8px;"> <label for="pgLowercase" style="display:inline; margin-bottom:0;">Include Lowercase (a-z)</label>
+                </div>
+                <div class="tool-input-group" style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <input type="checkbox" id="pgNumbers" checked style="width:auto; margin-right:8px;"> <label for="pgNumbers" style="display:inline; margin-bottom:0;">Include Numbers (0-9)</label>
+                </div>
+                <div class="tool-input-group" style="display: flex; align-items: center; margin-bottom: 20px;">
+                    <input type="checkbox" id="pgSymbols" checked style="width:auto; margin-right:8px;"> <label for="pgSymbols" style="display:inline; margin-bottom:0;">Include Symbols (!@#$...)</label>
+                </div>
+                <button id="pgGenerateBtn" class="btn">Generate Password</button>
+                <div class="tool-output" id="pgResultContainer" style="margin-top:15px;">
+                    <input type="text" id="pgResult" readonly placeholder="Generated password appears here" style="user-select: all; cursor: text;">
+                </div>
+                <button id="pgCopyBtn" class="btn btn-secondary" style="display:none; margin-top:10px;">Copy Password</button>
+            `;
+
+            const lengthInput = container.querySelector('#pgLength');
+            const uppercaseCheck = container.querySelector('#pgUppercase');
+            const lowercaseCheck = container.querySelector('#pgLowercase');
+            const numbersCheck = container.querySelector('#pgNumbers');
+            const symbolsCheck = container.querySelector('#pgSymbols');
+            const generateBtn = container.querySelector('#pgGenerateBtn');
+            const resultInput = container.querySelector('#pgResult');
+            const copyBtn = container.querySelector('#pgCopyBtn');
+
+            const charSets = {
+                uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                lowercase: 'abcdefghijklmnopqrstuvwxyz',
+                numbers: '0123456789',
+                symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+            };
+
+            generateBtn.addEventListener('click', () => {
+                clearStatusMessage(modalBody);
+                const length = parseInt(lengthInput.value);
+                let charset = '';
+                let requiredChars = '';
+
+                if (uppercaseCheck.checked) { charset += charSets.uppercase; requiredChars += charSets.uppercase[Math.floor(Math.random() * charSets.uppercase.length)];}
+                if (lowercaseCheck.checked) { charset += charSets.lowercase; requiredChars += charSets.lowercase[Math.floor(Math.random() * charSets.lowercase.length)];}
+                if (numbersCheck.checked) { charset += charSets.numbers; requiredChars += charSets.numbers[Math.floor(Math.random() * charSets.numbers.length)];}
+                if (symbolsCheck.checked) { charset += charSets.symbols; requiredChars += charSets.symbols[Math.floor(Math.random() * charSets.symbols.length)];}
+
+                if (length < 8 || length > 128) {
+                    showStatusMessage(modalBody, 'Password length must be between 8 and 128.', 'error');
+                    resultInput.value = ''; copyBtn.style.display = 'none'; return;
+                }
+                if (charset === '') {
+                    showStatusMessage(modalBody, 'Please select at least one character set.', 'error');
+                    resultInput.value = ''; copyBtn.style.display = 'none'; return;
+                }
+                 if (length < requiredChars.length) { // Ensure length is sufficient for one of each selected type
+                    showStatusMessage(modalBody, 'Password length is too short for the selected character types. Increase length or unselect some types.', 'error');
+                    resultInput.value = ''; copyBtn.style.display = 'none'; return;
+                }
+
+                let passwordArray = requiredChars.split('');
+                for (let i = requiredChars.length; i < length; i++) {
+                    passwordArray.push(charset[Math.floor(Math.random() * charset.length)]);
+                }
+                
+                // Shuffle the array to mix required characters
+                for (let i = passwordArray.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [passwordArray[i], passwordArray[j]] = [passwordArray[j], passwordArray[i]];
+                }
+                resultInput.value = passwordArray.join('');
+                copyBtn.style.display = 'inline-block';
+                showStatusMessage(modalBody, 'Password generated!', 'success');
+            });
+
+            copyBtn.addEventListener('click', () => {
+                clearStatusMessage(modalBody);
+                if (!resultInput.value) {
+                    showStatusMessage(modalBody, 'Nothing to copy.', 'error');
+                    return;
+                }
+                navigator.clipboard.writeText(resultInput.value)
+                    .then(() => showStatusMessage(modalBody, 'Password copied to clipboard!', 'success'))
+                    .catch(err => showStatusMessage(modalBody, 'Failed to copy password.', 'error'));
+            });
+        }
+
+        // --- 12. Word Counter ---
+        function setupWordCounterUI(container) {
+            container.innerHTML += `
+                <div class="tool-input-group">
+                    <label for="wcText">Enter Text:</label>
+                    <textarea id="wcText" rows="8" placeholder="Start typing or paste your text here..."></textarea>
+                </div>
+                <div class="tool-output" id="wcResult">
+                    Words: 0 | Characters: 0 | Spaces: 0 | Reading Time: ~0 min
+                </div>
+            `;
+            const textArea = container.querySelector('#wcText');
+            const resultDiv = container.querySelector('#wcResult');
+
+            textArea.addEventListener('input', () => {
+                const text = textArea.value;
+                
+                const characters = text.length;
+                const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).filter(Boolean).length; 
+                const spaces = (text.match(/ /g) || []).length;
+                
+                const readingTime = words > 0 ? Math.ceil(words / 200) : 0; 
+
+                resultDiv.textContent = `Words: ${words} | Characters (with spaces): ${characters} | Spaces: ${spaces} | Reading Time: ~${readingTime} min`;
+            });
+            textArea.dispatchEvent(new Event('input')); // Initial count
+        }
+
+        // --- 13. Base64 Encoder/Decoder ---
+        function setupBase64EncoderDecoderUI(container) {
+            container.innerHTML += `
+                <div class="tool-input-group">
+                    <label for="b64Input">Input Text:</label>
+                    <textarea id="b64Input" rows="5" placeholder="Enter text to encode or Base64 string to decode"></textarea>
+                </div>
+                <button id="b64EncodeBtn" class="btn">Encode to Base64</button>
+                <button id="b64DecodeBtn" class="btn">Decode from Base64</button>
+                <div class="tool-input-group" style="margin-top: 15px;">
+                    <label for="b64Output">Output:</label>
+                    <textarea id="b64Output" rows="5" readonly placeholder="Result will appear here"></textarea>
+                </div>
+                <button id="b64CopyOutputBtn" class="btn btn-secondary" style="display:none;">Copy Output</button>
+            `;
+            const inputArea = container.querySelector('#b64Input');
+            const outputArea = container.querySelector('#b64Output');
+            const encodeBtn = container.querySelector('#b64EncodeBtn');
+            const decodeBtn = container.querySelector('#b64DecodeBtn');
+            const copyBtn = container.querySelector('#b64CopyOutputBtn');
+
+            encodeBtn.addEventListener('click', () => {
+                clearStatusMessage(modalBody);
+                copyBtn.style.display = 'none';
+                try {
+                    const utf8Bytes = new TextEncoder().encode(inputArea.value);
+                    let binaryString = '';
+                    utf8Bytes.forEach(byte => binaryString += String.fromCharCode(byte));
+                    outputArea.value = btoa(binaryString);
+                    
+                    showStatusMessage(modalBody, 'Encoded successfully.', 'success');
+                    if (outputArea.value) copyBtn.style.display = 'inline-block';
+                } catch (e) {
+                    outputArea.value = '';
+                    showStatusMessage(modalBody, 'Encoding error: ' + e.message, 'error');
+                }
+            });
+
+            decodeBtn.addEventListener('click', () => {
+                clearStatusMessage(modalBody);
+                copyBtn.style.display = 'none';
+                try {
+                    const binaryString = atob(inputArea.value);
+                    const bytes = new Uint8Array(binaryString.length);
+                    for (let i = 0; i < binaryString.length; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    outputArea.value = new TextDecoder().decode(bytes);
+
+                    showStatusMessage(modalBody, 'Decoded successfully.', 'success');
+                    if (outputArea.value) copyBtn.style.display = 'inline-block';
+                } catch (e) {
+                     outputArea.value = '';
+                     showStatusMessage(modalBody, 'Decoding error: Invalid Base64 string. ' + e.message, 'error');
+                }
+            });
+            copyBtn.addEventListener('click', () => {
+                clearStatusMessage(modalBody);
+                if (!outputArea.value) {
+                    showStatusMessage(modalBody, 'Nothing to copy.', 'error');
+                    return;
+                }
+                navigator.clipboard.writeText(outputArea.value)
+                    .then(() => showStatusMessage(modalBody, 'Output copied to clipboard!', 'success'))
+                    .catch(err => showStatusMessage(modalBody, 'Failed to copy output.', 'error'));
+            });
+        }
+
+        // --- 14. Color Picker Tool ---
+        function setupColorPickerUI(container) {
+            container.innerHTML += `
+                <div class="tool-input-group">
+                    <label for="cpPicker">Choose Color:</label>
+                    <input type="color" id="cpPicker" value="#FFD700">
+                </div>
+                <div class="tool-output" id="cpResult">
+                    <p id="cpPreview" style="width:100px; height:100px; border:1px solid var(--text-color); margin-bottom:10px; border-radius: 5px;"></p>
+                    <p>HEX: <strong id="cpHex"></strong> <button class="btn-copy-color" data-target="cpHex">Copy</button></p>
+                    <p>RGB: <strong id="cpRgb"></strong> <button class="btn-copy-color" data-target="cpRgb">Copy</button></p>
+                    <p>HSL: <strong id="cpHsl"></strong> <button class="btn-copy-color" data-target="cpHsl">Copy</button></p>
+                </div>
+            `;
+            const colorPicker = container.querySelector('#cpPicker');
+            const previewBox = container.querySelector('#cpPreview');
+            const hexValEl = container.querySelector('#cpHex');
+            const rgbValEl = container.querySelector('#cpRgb');
+            const hslValEl = container.querySelector('#cpHsl');
+
+            function updateColorValues(hexColor) {
+                previewBox.style.backgroundColor = hexColor;
+                hexValEl.textContent = hexColor.toUpperCase();
+
+                let r = 0, g = 0, b = 0;
+                if (hexColor.length === 4) { // #RGB format
+                    r = parseInt(hexColor[1] + hexColor[1], 16);
+                    g = parseInt(hexColor[2] + hexColor[2], 16);
+                    b = parseInt(hexColor[3] + hexColor[3], 16);
+                } else if (hexColor.length === 7) { // #RRGGBB format
+                    r = parseInt(hexColor.substring(1, 3), 16);
+                    g = parseInt(hexColor.substring(3, 5), 16);
+                    b = parseInt(hexColor.substring(5, 7), 16);
+                }
+                rgbValEl.textContent = `rgb(${r}, ${g}, ${b})`;
+
+                const rNorm = r / 255, gNorm = g / 255, bNorm = b / 255;
+                const max = Math.max(rNorm, gNorm, bNorm), min = Math.min(rNorm, gNorm, bNorm);
+                let h, s, l = (max + min) / 2;
+
+                if (max === min) {
+                    h = s = 0; 
+                } else {
+                    const d = max - min;
+                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                    switch (max) {
+                        case rNorm: h = (gNorm - bNorm) / d + (gNorm < bNorm ? 6 : 0); break;
+                        case gNorm: h = (bNorm - rNorm) / d + 2; break;
+                        case bNorm: h = (rNorm - gNorm) / d + 4; break;
+                    }
+                    h /= 6;
+                }
+                hslValEl.textContent = `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+            }
+            
+            colorPicker.addEventListener('input', (e) => {
+                clearStatusMessage(modalBody);
+                updateColorValues(e.target.value);
+            });
+            
+            container.querySelectorAll('.btn-copy-color').forEach(button => {
+                button.classList.add('btn', 'btn-secondary');
+                button.style.padding = '2px 6px';
+                button.style.fontSize = '0.8em';
+                button.style.marginLeft = '10px';
+                button.addEventListener('click', (e) => {
+                    const targetId = e.target.getAttribute('data-target');
+                    const textToCopy = container.querySelector(`#${targetId}`).textContent;
+                    navigator.clipboard.writeText(textToCopy)
+                        .then(() => showStatusMessage(modalBody, `${textToCopy.split(':')[0]} value copied!`, 'success'))
+                        .catch(err => showStatusMessage(modalBody, 'Failed to copy.', 'error'));
+                });
+            });
+            updateColorValues(colorPicker.value); // Initial call
+        }
+
+        // --- 15. Text to Speech ---
+        function setupTextToSpeechUI(container) {
+            container.innerHTML += `
+                <div class="tool-input-group">
+                    <label for="ttsText">Text to Speak:</label>
+                    <textarea id="ttsText" rows="5" placeholder="Enter text here..."></textarea>
+                </div>
+                <div class="tool-input-group">
+                    <label for="ttsVoice">Select Voice:</label>
+                    <select id="ttsVoice"></select>
+                </div>
+                 <div class="tool-input-group">
+                    <label for="ttsRate">Rate (0.5 - 2): <span id="ttsRateVal">1</span></label>
+                    <input type="range" id="ttsRate" min="0.5" max="2" value="1" step="0.1"> 
+                </div>
+                <div class="tool-input-group">
+                    <label for="ttsPitch">Pitch (0 - 2): <span id="ttsPitchVal">1</span></label>
+                    <input type="range" id="ttsPitch" min="0" max="2" value="1" step="0.1"> 
+                </div>
+                <button id="ttsSpeakBtn" class="btn">Speak</button>
+                <button id="ttsStopBtn" class="btn btn-secondary">Stop</button>
+                <div class="tool-output" id="ttsStatus" style="margin-top:10px;"></div>
+            `;
+
+            const textArea = container.querySelector('#ttsText');
+            const voiceSelect = container.querySelector('#ttsVoice');
+            const rateRange = container.querySelector('#ttsRate');
+            const rateVal = container.querySelector('#ttsRateVal');
+            const pitchRange = container.querySelector('#ttsPitch');
+            const pitchVal = container.querySelector('#ttsPitchVal');
+            const speakBtn = container.querySelector('#ttsSpeakBtn');
+            const stopBtn = container.querySelector('#ttsStopBtn');
+            const statusDiv = container.querySelector('#ttsStatus');
+            
+            let voices = [];
+
+            function populateVoiceList() {
+                voices = speechSynthesis.getVoices();
+                const currentVoiceName = voiceSelect.value;
+                voiceSelect.innerHTML = ''; 
+                voices.forEach((voice) => {
+                    const option = document.createElement('option');
+                    option.textContent = `${voice.name} (${voice.lang})`;
+                    option.value = voice.name;
+                    if (voice.default) option.selected = true;
+                    voiceSelect.appendChild(option);
+                });
+                
+                if (voices.some(v => v.name === currentVoiceName)) {
+                    voiceSelect.value = currentVoiceName;
+                } else if (voiceSelect.options.length > 0 && !voiceSelect.selectedOptions.length) {
+                     // If no default and previous wasn't found, select the first available.
+                    const defaultEnglish = voices.find(v => v.lang.startsWith('en') && v.default) || voices.find(v => v.lang.startsWith('en'));
+                    if(defaultEnglish) voiceSelect.value = defaultEnglish.name;
+                    else if(voices.length > 0) voiceSelect.value = voices[0].name;
+                }
+            }
+            
+            if (typeof speechSynthesis === 'undefined') {
+                statusDiv.textContent = 'Text-to-Speech API not supported by your browser.';
+                [speakBtn, stopBtn, rateRange, pitchRange, voiceSelect].forEach(el => el.disabled = true);
+                return;
+            }
+
+            populateVoiceList(); // Initial call
+            if (speechSynthesis.onvoiceschanged !== undefined) { // Ensure it repopulates if voices load late
+                speechSynthesis.onvoiceschanged = populateVoiceList;
+            }
+            // Fallback for browsers where onvoiceschanged might not fire reliably at first
+            setTimeout(populateVoiceList, 200);
+
+
+            rateRange.addEventListener('input', () => rateVal.textContent = rateRange.value);
+            pitchRange.addEventListener('input', () => pitchVal.textContent = pitchRange.value);
+
+            speakBtn.addEventListener('click', () => {
+                clearStatusMessage(modalBody);
+                statusDiv.textContent = '';
+                if (speechSynthesis.speaking) {
+                    speechSynthesis.cancel(); 
+                }
+                if (textArea.value.trim() === '') {
+                    showStatusMessage(modalBody, 'Please enter some text.', 'error'); return;
+                }
+
+                const utterance = new SpeechSynthesisUtterance(textArea.value);
+                const selectedVoice = voices.find(voice => voice.name === voiceSelect.value);
+                if (selectedVoice) utterance.voice = selectedVoice;
+                else if (voices.length > 0) utterance.voice = voices[0]; // Fallback to first voice if selection fails
+                
+                utterance.pitch = parseFloat(pitchRange.value);
+                utterance.rate = parseFloat(rateRange.value);
+                
+                utterance.onstart = () => { statusDiv.textContent = 'Speaking...'; clearStatusMessage(modalBody);};
+                utterance.onend = () => statusDiv.textContent = 'Finished speaking.';
+                utterance.onerror = (event) => {
+                    statusDiv.textContent = `Error: ${event.error}`;
+                    showStatusMessage(modalBody, `Speech error: ${event.error}`, 'error');
+                    console.error("SpeechSynthesisUtterance.onerror", event);
+                }
+                speechSynthesis.speak(utterance);
+            });
+
+            stopBtn.addEventListener('click', () => {
+                if (speechSynthesis.speaking) {
+                    speechSynthesis.cancel();
+                    statusDiv.textContent = 'Speech stopped.';
+                }
+            });
+            
+            window.currentToolCleanup = () => { 
+                if (speechSynthesis.speaking) {
+                    speechSynthesis.cancel();
+                }
+            };
+        }
+        
+        // --- 16. Speech to Text ---
+        function setupSpeechToTextUI(container) {
+            container.innerHTML = `
+                <button id="sttStartBtn" class="btn">Start Listening</button>
+                <button id="sttStopBtn" class="btn btn-secondary" disabled>Stop Listening</button>
+                <div class="tool-output" id="sttResult" style="min-height: 100px; margin-top:15px;">
+                    <p><em>Click "Start Listening" and speak into your microphone.</em></p>
+                </div>
+            `;
+            const startBtn = container.querySelector('#sttStartBtn');
+            const stopBtn = container.querySelector('#sttStopBtn');
+            const resultDiv = container.querySelector('#sttResult');
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            let recognition;
+
+            if (!SpeechRecognition) {
+                resultDiv.innerHTML = '<p>Speech Recognition API not supported by your browser. Try Chrome or Edge.</p>';
+                startBtn.disabled = true;
+                return;
+            }
+            
+            recognition = new SpeechRecognition();
+            recognition.continuous = true; 
+            recognition.interimResults = true; 
+            recognition.lang = 'en-US'; 
+
+            let finalTranscript = '';
+
+            recognition.onstart = () => {
+                startBtn.disabled = true; stopBtn.disabled = false;
+                resultDiv.innerHTML = '<p><em>Listening...</em></p>';
+                finalTranscript = ''; 
+                clearStatusMessage(modalBody);
+            };
+
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript + ' ';
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+                resultDiv.innerHTML = `<p>${finalTranscript}<span style="color:#bbb;">${interimTranscript}</span></p>`;
+            };
+
+            recognition.onerror = (event) => {
+                let errorMsg = `Error: ${event.error}`;
+                if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                    errorMsg += ". Ensure microphone access is permitted.";
+                } else if (event.error === 'no-speech') {
+                    errorMsg += ". No speech detected.";
+                }
+                showStatusMessage(modalBody, errorMsg, 'error');
+                console.error("SpeechRecognition error", event);
+                startBtn.disabled = false; stopBtn.disabled = true;
+                window.activeSpeechRecognition = null; 
+            };
+
+            recognition.onend = () => {
+                startBtn.disabled = false; stopBtn.disabled = true;
+                 if (resultDiv.textContent.includes("Listening...") && !finalTranscript) { 
+                     resultDiv.innerHTML = "<p><em>Stopped listening. No speech was clearly recognized.</em></p>";
+                } else if (!finalTranscript) {
+                    resultDiv.innerHTML = "<p><em>Stopped listening. Try again.</em></p>";
+                }
+                window.activeSpeechRecognition = null; 
+            };
+
+            startBtn.addEventListener('click', () => {
+                try {
+                    finalTranscript = ''; // Reset
+                    recognition.start();
+                    window.activeSpeechRecognition = recognition; 
+                } catch (e) {
+                    showStatusMessage(modalBody, `Could not start recognition: ${e.message}`, 'error');
+                    startBtn.disabled = false; stopBtn.disabled = true;
+                }
+            });
+            stopBtn.addEventListener('click', () => {
+                if (recognition) {
+                    recognition.stop();
+                }
+            });
+            
+            window.currentToolCleanup = () => {
+                if (recognition && window.activeSpeechRecognition) { // Ensure it's this instance
+                    try { recognition.stop(); } catch (e) { /* ignore */ }
+                }
+                window.activeSpeechRecognition = null;
+            };
+        }
+        
+        // --- 17. JSON Formatter ---
+        function setupJsonFormatterUI(container) {
+            container.innerHTML += `
+                <div class="tool-input-group">
+                    <label for="jsonInputArea">Paste JSON here:</label>
+                    <textarea id="jsonInputArea" rows="10" placeholder='{ "key": "value", "number": 123 }'></textarea>
+                </div>
+                <button id="jsonFormatBtn" class="btn">Format / Validate</button>
+                <div class="tool-output" id="jsonOutputContainer" style="margin-top:15px;">
+                    <label for="jsonFormattedOutput" style="display:block; margin-bottom:5px;">Formatted JSON:</label>
+                    <pre id="jsonFormattedOutput"></pre>
+                </div>
+                <button id="jsonCopyOutputBtn" class="btn btn-secondary" style="display:none;">Copy Formatted JSON</button>
+            `;
+            const inputArea = container.querySelector('#jsonInputArea');
+            const formatBtn = container.querySelector('#jsonFormatBtn');
+            const outputArea = container.querySelector('#jsonFormattedOutput');
+            const copyBtn = container.querySelector('#jsonCopyOutputBtn');
+
+            formatBtn.addEventListener('click', () => {
+                const jsonString = inputArea.value.trim();
+                clearStatusMessage(modalBody);
+                outputArea.textContent = ''; 
+                copyBtn.style.display = 'none';
+
+                if (!jsonString) {
+                    showStatusMessage(modalBody, 'Please paste some JSON data.', 'error');
+                    return;
+                }
+                try {
+                    const jsonObj = JSON.parse(jsonString);
+                    outputArea.textContent = JSON.stringify(jsonObj, null, 2); 
+                    showStatusMessage(modalBody, 'JSON formatted and validated successfully.', 'success');
+                    if (outputArea.textContent) copyBtn.style.display = 'inline-block';
+                } catch (e) {
+                    outputArea.textContent = `Error: ${e.message}`;
+                    outputArea.style.color = 'var(--accent-color)';
+                    showStatusMessage(modalBody, 'Invalid JSON. See error details above.', 'error');
+                }
+            });
+
+            copyBtn.addEventListener('click', () => {
+                clearStatusMessage(modalBody);
+                if (!outputArea.textContent) {
+                    showStatusMessage(modalBody, 'Nothing to copy.', 'error');
+                    return;
+                }
+                navigator.clipboard.writeText(outputArea.textContent)
+                    .then(() => showStatusMessage(modalBody, 'Formatted JSON copied!', 'success'))
+                    .catch(err => showStatusMessage(modalBody, 'Failed to copy.', 'error'));
+            });
+        }
+
+        // --- 18. Unit Converter ---
+        function setupUnitConverterUI(container) {
+            container.innerHTML += `
+                <div class="tool-input-group">
+                    <label for="ucCategory">Select Category:</label>
+                    <select id="ucCategory">
+                        <option value="length">Length</option>
+                        <option value="weight">Weight</option>
+                        <option value="temperature">Temperature</option>
+                        <option value="area">Area</option>
+                        <option value="volume">Volume</option>
+                        <option value="speed">Speed</option>
+                    </select>
+                </div>
+                <div class="tool-input-group">
+                    <label for="ucInputValue">Value:</label>
+                    <input type="number" id="ucInputValue" value="1">
+                </div>
+                <div class="tool-input-group">
+                    <label for="ucFromUnit">From:</label>
+                    <select id="ucFromUnit"></select>
+                </div>
+                <div class="tool-input-group">
+                    <label for="ucToUnit">To:</label>
+                    <select id="ucToUnit"></select>
+                </div>
+                <div class="tool-output" id="ucResult">Result: </div>
+            `;
+
+            const categorySelect = container.querySelector('#ucCategory');
+            const valueInput = container.querySelector('#ucInputValue');
+            const fromUnitSelect = container.querySelector('#ucFromUnit');
+            const toUnitSelect = container.querySelector('#ucToUnit');
+            const resultDiv = container.querySelector('#ucResult');
+
+            const units = {
+                length: { meter: 1, kilometer: 1000, centimeter: 0.01, millimeter: 0.001, mile: 1609.34, yard: 0.9144, foot: 0.3048, inch: 0.0254, "nautical-mile": 1852},
+                weight: { kilogram: 1, gram: 0.001, milligram: 0.000001, pound: 0.453592, ounce: 0.0283495, ton_metric: 1000},
+                temperature: { celsius: 'celsius', fahrenheit: 'fahrenheit', kelvin: 'kelvin' },
+                area: { sq_meter: 1, sq_kilometer: 1000000, sq_mile: 2589988.11, sq_yard: 0.836127, sq_foot: 0.092903, hectare: 10000, acre: 4046.86 },
+                volume: { liter: 1, milliliter: 0.001, cubic_meter: 1000, cubic_centimeter: 0.001, gallon_us: 3.78541, quart_us: 0.946353, pint_us: 0.473176, cup_us: 0.236588 },
+                speed: { mps: 1, kmh: 0.277778, mph: 0.44704, knot: 0.514444, fps: 0.3048 }
+            };
+
+            function populateUnitSelectors(category) {
+                fromUnitSelect.innerHTML = ''; toUnitSelect.innerHTML = '';
+                const categoryUnits = units[category];
+                for (const unitKey in categoryUnits) {
+                    const unitName = unitKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()); // Prettify name
+                    fromUnitSelect.appendChild(createElement('option', { value: unitKey }, unitName));
+                    toUnitSelect.appendChild(createElement('option', { value: unitKey }, unitName));
+                }
+                if (fromUnitSelect.options.length > 0) fromUnitSelect.selectedIndex = 0;
+                if (toUnitSelect.options.length > 1) toUnitSelect.selectedIndex = 1;
+                else if (toUnitSelect.options.length > 0) toUnitSelect.selectedIndex = 0;
+            }
+
+            function convertUnits() {
+                clearStatusMessage(modalBody);
+                const category = categorySelect.value;
+                const fromUnit = fromUnitSelect.value;
+                const toUnit = toUnitSelect.value;
+                const value = parseFloat(valueInput.value);
+
+                if (isNaN(value)) {
+                    resultDiv.textContent = 'Result: Invalid input value.';
+                    showStatusMessage(modalBody, 'Please enter a valid number.', 'error');
+                    return;
+                }
+
+                let result;
+                if (category === 'temperature') {
+                    if (fromUnit === toUnit) result = value;
+                    else if (fromUnit === 'celsius') result = (toUnit === 'fahrenheit') ? (value * 9/5) + 32 : value + 273.15;
+                    else if (fromUnit === 'fahrenheit') result = (toUnit === 'celsius') ? (value - 32) * 5/9 : ((value - 32) * 5/9) + 273.15;
+                    else if (fromUnit === 'kelvin') result = (toUnit === 'celsius') ? value - 273.15 : ((value - 273.15) * 9/5) + 32;
+                } else {
+                    const fromFactor = units[category][fromUnit];
+                    const toFactor = units[category][toUnit];
+                    const valueInBaseUnit = value * fromFactor;
+                    result = valueInBaseUnit / toFactor;
+                }
+                
+                resultDiv.textContent = `Result: ${value.toLocaleString()} ${fromUnitSelect.options[fromUnitSelect.selectedIndex].text} = ${result.toLocaleString(undefined, {maximumFractionDigits: 5})} ${toUnitSelect.options[toUnitSelect.selectedIndex].text}`;
+            }
+
+            [categorySelect, valueInput, fromUnitSelect, toUnitSelect].forEach(el => {
+                el.addEventListener('change', convertUnits);
+                el.addEventListener('input', convertUnits); // For value input
+            });
+            
+            populateUnitSelectors(categorySelect.value);
+            convertUnits(); // Initial conversion
+        }
+
+        // --- 19. BMI Calculator ---
+        function setupBmiCalculatorUI(container) {
+            container.innerHTML += `
+                <div class="tool-input-group">
+                    <label for="bmiWeight">Weight:</label>
+                    <input type="number" id="bmiWeight" placeholder="e.g., 70" style="width: calc(100% - 80px); display: inline-block;">
+                    <select id="bmiWeightUnit" style="width: 70px; display: inline-block; padding: 10px; margin-left: 5px;">
+                        <option value="kg">kg</option>
+                        <option value="lbs">lbs</option>
+                    </select>
+                </div>
+                <div class="tool-input-group">
+                    <label for="bmiHeight">Height:</label>
+                    <input type="number" id="bmiHeight" placeholder="e.g., 175" style="width: calc(100% - 80px); display: inline-block;">
+                     <select id="bmiHeightUnit" style="width: 70px; display: inline-block; padding: 10px; margin-left: 5px;">
+                        <option value="cm">cm</option>
+                        <option value="m">m</option>
+                        <option value="ft">ft</option>
+                    </select>
+                </div>
+                <div class="tool-input-group" id="bmiHeightInchesGroup" style="display:none;">
+                     <label for="bmiHeightInches">Inches (if height in ft):</label>
+                     <input type="number" id="bmiHeightInches" placeholder="e.g., 9" value="0" min="0" max="11">
+                </div>
+                <button id="bmiCalculateBtn" class="btn">Calculate BMI</button>
+                <div class="tool-output" id="bmiResult"></div>
+            `;
+
+            const weightInput = container.querySelector('#bmiWeight');
+            const weightUnitSelect = container.querySelector('#bmiWeightUnit');
+            const heightInput = container.querySelector('#bmiHeight');
+            const heightUnitSelect = container.querySelector('#bmiHeightUnit');
+            const heightInchesGroup = container.querySelector('#bmiHeightInchesGroup');
+            const heightInchesInput = container.querySelector('#bmiHeightInches');
+            const calculateBtn = container.querySelector('#bmiCalculateBtn');
+            const resultDiv = container.querySelector('#bmiResult');
+
+            heightUnitSelect.addEventListener('change', () => {
+                heightInchesGroup.style.display = (heightUnitSelect.value === 'ft') ? 'block' : 'none';
+            });
+
+            calculateBtn.addEventListener('click', () => {
+                resultDiv.innerHTML = '';
+                clearStatusMessage(modalBody);
+                const weight = parseFloat(weightInput.value);
+                const height = parseFloat(heightInput.value);
+                const weightUnit = weightUnitSelect.value;
+                const heightUnit = heightUnitSelect.value;
+                const heightInches = parseFloat(heightInchesInput.value) || 0;
+
+                if (isNaN(weight) || isNaN(height) || weight <= 0 || height <= 0 || (heightUnit === 'ft' && (isNaN(heightInches) || heightInches < 0 || heightInches >=12 )) ) {
+                    showStatusMessage(modalBody, 'Please enter valid positive weight and height. Inches must be 0-11.', 'error');
+                    return;
+                }
+
+                let weightInKg = weight;
+                if (weightUnit === 'lbs') weightInKg = weight * 0.453592;
+                
+                let heightInM = height;
+                if (heightUnit === 'cm') heightInM = height / 100;
+                else if (heightUnit === 'ft') heightInM = (height * 12 + heightInches) * 0.0254;
+                // if 'm', it's already meters
+
+                if (heightInM <= 0) {
+                    showStatusMessage(modalBody, 'Height must be greater than zero.', 'error');
+                    return;
+                }
+
+                const bmi = weightInKg / (heightInM * heightInM);
+                let category = '';
+
+                if (bmi < 18.5) category = 'Underweight';
+                else if (bmi < 24.9) category = 'Normal weight';
+                else if (bmi < 29.9) category = 'Overweight';
+                else category = 'Obese';
+
+                resultDiv.innerHTML = `Your BMI: <strong>${bmi.toFixed(2)}</strong><br>
+                               Category: <strong>${category}</strong>`;
+            });
+        }
+
+        // --- 20. Timer / Stopwatch Tool ---
+        function setupTimerStopwatchUI(container) {
+            container.innerHTML = `
+                <div class="tabs" style="margin-bottom: 15px;">
+                    <button class="tab-btn btn active" data-tab="timerTabContent">Timer</button>
+                    <button class="tab-btn btn" data-tab="stopwatchTabContent">Stopwatch</button>
+                </div>
+
+                <div id="timerTabContent" class="tab-content active-content">
+                    <h3>Timer</h3>
+                    <div class="tool-input-group" style="display:flex; justify-content:space-around; align-items:center;">
+                        <div><label for="timerHours">H:</label> <input type="number" id="timerHours" min="0" value="0" style="width: 60px;"></div>
+                        <div><label for="timerMinutes">M:</label> <input type="number" id="timerMinutes" min="0" max="59" value="1" style="width: 60px;"></div>
+                        <div><label for="timerSeconds">S:</label> <input type="number" id="timerSeconds" min="0" max="59" value="0" style="width: 60px;"></div>
+                    </div>
+                    <div id="timerDisplay" style="font-size: 2.5em; margin: 15px 0; text-align: center; color: var(--accent-color);">00:01:00</div>
+                    <button id="timerStartBtn" class="btn">Start</button>
+                    <button id="timerPauseBtn" class="btn btn-secondary" disabled>Pause</button>
+                    <button id="timerResetBtn" class="btn btn-secondary">Reset</button>
+                    <audio id="timerAlarmSound" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABgAAABkYXRhAgAAAAEA" style="display:none;"></audio>
+                    <div class="tool-input-group" style="margin-top:10px; display: flex; align-items: center;">
+                        <input type="checkbox" id="timerSoundCheck" checked  style="width:auto; margin-right:8px;"> <label for="timerSoundCheck" style="display:inline; margin-bottom:0;">Play sound on finish</label>
+                    </div>
+                </div>
+
+                <div id="stopwatchTabContent" class="tab-content">
+                    <h3>Stopwatch</h3>
+                    <div id="stopwatchDisplay" style="font-size: 2.5em; margin: 20px 0; text-align: center; color: var(--accent-color);">00:00:00.000</div>
+                    <button id="stopwatchStartBtn" class="btn">Start</button>
+                    <button id="stopwatchPauseBtn" class="btn btn-secondary" disabled>Pause</button>
+                    <button id="stopwatchLapBtn" class="btn btn-secondary" disabled>Lap</button>
+                    <button id="stopwatchResetBtn" class="btn btn-secondary">Reset</button>
+                    <div id="stopwatchLaps" style="margin-top:15px; max-height: 150px; overflow-y: auto; border: 1px solid var(--card-bg); padding: 5px; border-radius: 5px;"></div>
+                </div>
+            `;
+
+            const tabButtons = container.querySelectorAll('.tab-btn');
+            const tabContents = container.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    tabContents.forEach(content => content.classList.remove('active-content'));
+                    container.querySelector(`#${button.dataset.tab}`).classList.add('active-content');
+                });
+            });
+
+            // --- Timer Logic ---
+            const timerHoursInput = container.querySelector('#timerHours');
+            const timerMinutesInput = container.querySelector('#timerMinutes');
+            const timerSecondsInput = container.querySelector('#timerSeconds');
+            const timerDisplay = container.querySelector('#timerDisplay');
+            const timerStartBtn = container.querySelector('#timerStartBtn');
+            const timerPauseBtn = container.querySelector('#timerPauseBtn');
+            const timerResetBtn = container.querySelector('#timerResetBtn');
+            const timerAlarmSound = container.querySelector('#timerAlarmSound');
+            const timerSoundCheck = container.querySelector('#timerSoundCheck');
+
+            let timerInterval;
+            let timerTotalSecondsSet = 0;
+            let timerRemainingSeconds = 0;
+            let isTimerPaused = false;
+
+            function updateTimerDisplay() {
+                const h = Math.floor(timerRemainingSeconds / 3600);
+                const m = Math.floor((timerRemainingSeconds % 3600) / 60);
+                const s = timerRemainingSeconds % 60;
+                timerDisplay.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            }
+
+            function setInitialTimerValues() {
+                const h = parseInt(timerHoursInput.value) || 0;
+                const m = parseInt(timerMinutesInput.value) || 0;
+                const s = parseInt(timerSecondsInput.value) || 0;
+                timerTotalSecondsSet = (h * 3600) + (m * 60) + s;
+                timerRemainingSeconds = timerTotalSecondsSet;
+                updateTimerDisplay();
+            }
+            [timerHoursInput, timerMinutesInput, timerSecondsInput].forEach(inp => inp.addEventListener('input', setInitialTimerValues));
+            setInitialTimerValues();
+
+            timerStartBtn.addEventListener('click', () => {
+                clearStatusMessage(modalBody);
+                if (timerInterval) clearInterval(timerInterval);
+                
+                if (!isTimerPaused) { // Starting fresh or after reset
+                    setInitialTimerValues();
+                }
+                 if (timerRemainingSeconds <= 0) {
+                    showStatusMessage(modalBody, "Set a duration greater than 0.", "error");
+                    return;
+                }
+
+                isTimerPaused = false;
+                timerStartBtn.disabled = true; timerPauseBtn.disabled = false;
+                [timerHoursInput, timerMinutesInput, timerSecondsInput].forEach(inp => inp.disabled = true);
+
+                timerInterval = setInterval(() => {
+                    timerRemainingSeconds--;
+                    updateTimerDisplay();
+                    if (timerRemainingSeconds <= 0) {
+                        clearInterval(timerInterval);
+                        timerDisplay.textContent = "00:00:00";
+                        if (timerSoundCheck.checked) {
+                            timerAlarmSound.currentTime = 0; 
+                            timerAlarmSound.play().catch(e => console.warn("Alarm sound play failed", e));
+                        }
+                        showStatusMessage(modalBody, "Timer Finished!", "success");
+                        timerStartBtn.disabled = false; timerPauseBtn.disabled = true;
+                        [timerHoursInput, timerMinutesInput, timerSecondsInput].forEach(inp => inp.disabled = false);
+                        timerStartBtn.textContent = "Start";
+                    }
+                }, 1000);
+            });
+
+            timerPauseBtn.addEventListener('click', () => {
+                clearInterval(timerInterval);
+                isTimerPaused = true;
+                timerStartBtn.disabled = false; timerPauseBtn.disabled = true;
+                timerStartBtn.textContent = "Resume";
+            });
+
+            timerResetBtn.addEventListener('click', () => {
+                clearInterval(timerInterval);
+                isTimerPaused = false;
+                timerStartBtn.disabled = false; timerPauseBtn.disabled = true;
+                timerStartBtn.textContent = "Start";
+                [timerHoursInput, timerMinutesInput, timerSecondsInput].forEach(inp => inp.disabled = false);
+                timerAlarmSound.pause(); timerAlarmSound.currentTime = 0;
+                setInitialTimerValues(); 
+                clearStatusMessage(modalBody);
+            });
+
+            // --- Stopwatch Logic ---
+            const stopwatchDisplay = container.querySelector('#stopwatchDisplay');
+            const stopwatchStartBtn = container.querySelector('#stopwatchStartBtn');
+            const stopwatchPauseBtn = container.querySelector('#stopwatchPauseBtn');
+            const stopwatchLapBtn = container.querySelector('#stopwatchLapBtn');
+            const stopwatchResetBtn = container.querySelector('#stopwatchResetBtn');
+            const stopwatchLapsDiv = container.querySelector('#stopwatchLaps');
+
+            let stopwatchReqId;
+            let stopwatchStartTime = 0, stopwatchElapsedTime = 0, stopwatchPausedTime = 0;
+            let lapCount = 0;
+
+            function formatStopwatchTime(timeMs) {
+                const totalSeconds = Math.floor(timeMs / 1000);
+                const h = Math.floor(totalSeconds / 3600);
+                const m = Math.floor((totalSeconds % 3600) / 60);
+                const s = totalSeconds % 60;
+                const ms = String(timeMs % 1000).padStart(3, '0');
+                return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${ms}`;
+            }
+
+            function runStopwatch() {
+                stopwatchElapsedTime = Date.now() - stopwatchStartTime + stopwatchPausedTime;
+                stopwatchDisplay.textContent = formatStopwatchTime(stopwatchElapsedTime);
+                stopwatchReqId = requestAnimationFrame(runStopwatch);
+            }
+
+            stopwatchStartBtn.addEventListener('click', () => {
+                if (!stopwatchReqId) { 
+                    stopwatchStartTime = Date.now();
+                    // If resuming, stopwatchPausedTime already holds the time before pause.
+                    // stopwatchStartTime is set to now, so elapsed time calculation naturally continues.
+                    stopwatchReqId = requestAnimationFrame(runStopwatch);
+                    stopwatchStartBtn.disabled = true; stopwatchPauseBtn.disabled = false; stopwatchLapBtn.disabled = false;
+                }
+            });
+            
+            stopwatchPauseBtn.addEventListener('click', () => {
+                cancelAnimationFrame(stopwatchReqId);
+                stopwatchReqId = null;
+                stopwatchPausedTime = stopwatchElapsedTime; // Store total elapsed time when paused
+                stopwatchStartBtn.disabled = false; stopwatchPauseBtn.disabled = true;
+            });
+
+            stopwatchLapBtn.addEventListener('click', () => {
+                if (stopwatchReqId || stopwatchPausedTime > 0) { // Lap if running or paused with time
+                    lapCount++;
+                    const lapTime = formatStopwatchTime(stopwatchElapsedTime);
+                    const lapElement = createElement('p', {}, `Lap ${lapCount}: ${lapTime}`);
+                    stopwatchLapsDiv.prepend(lapElement); 
+                }
+            });
+
+            stopwatchResetBtn.addEventListener('click', () => {
+                cancelAnimationFrame(stopwatchReqId);
+                stopwatchReqId = null;
+                stopwatchStartTime = 0; stopwatchElapsedTime = 0; stopwatchPausedTime = 0;
+                lapCount = 0;
+                stopwatchDisplay.textContent = "00:00:00.000";
+                stopwatchLapsDiv.innerHTML = '';
+                stopwatchStartBtn.disabled = false; stopwatchPauseBtn.disabled = true; stopwatchLapBtn.disabled = true;
+            });
+            
+            window.currentToolCleanup = () => { // Combined cleanup for timer and stopwatch
+                clearInterval(timerInterval);
+                timerAlarmSound.pause(); timerAlarmSound.currentTime = 0;
+
+                cancelAnimationFrame(stopwatchReqId);
+                stopwatchReqId = null;
+            };
+        }
+
+        // --- Initialize ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderToolCards();
+        });
+
+    </script>
+  	<script type="text/javascript">
+	atOptions = {
+		'key' : 'df78a466df510d2707615e4f3af28f2a',
+		'format' : 'iframe',
+		'height' : 90,
+		'width' : 728,
+		'params' : {}
+	};
+	</script>
+	<script type="text/javascript" src="//www.highperformanceformat.com/df78a466df510d2707615e4f3af28f2a/invoke.js"></script>
+  	<script type="text/javascript">
+	atOptions = {
+		'key' : 'df78a466df510d2707615e4f3af28f2a',
+		'format' : 'iframe',
+		'height' : 90,
+		'width' : 728,
+		'params' : {}
+	};
+	</script>
+	<script type="text/javascript" src="//www.highperformanceformat.com/df78a466df510d2707615e4f3af28f2a/invoke.js"></script>
+  	
+</body>
+</html>
